@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Depth Narrative</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&display=swap');
+        
+        body { 
+            background-color: #080808; 
+            color: white; 
+            font-family: 'Space Grotesk', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* Progress Bar */
+        #progress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 4px;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            z-index: 100;
+            width: 0%;
+        }
+
+        .scroll-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-text {
+            position: absolute;
+            font-size: 20vw;
+            font-weight: 700;
+            opacity: 0.03;
+            white-space: nowrap;
+            pointer-events: none;
+            will-change: transform;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress"></div>
+
+    <div id="ghost" class="floating-text">EXPLORE THE UNKNOWN EXPLORE THE UNKNOWN</div>
+
+    <section class="scroll-section">
+        <div class="text-center z-10">
+            <h1 class="text-8xl font-bold tracking-tighter animate-pulse">ORIGIN</h1>
+            <p class="text-zinc-500 mt-4 tracking-[1em] uppercase">Scroll to descend</p>
+        </div>
+    </section>
+
+    <section class="scroll-section bg-zinc-900/30">
+        <div class="container mx-auto px-10 grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <div class="reveal-box overflow-hidden rounded-3xl h-[600px]">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80" 
+                     class="w-full h-full object-cover parallax-img scale-150">
+            </div>
+            <div>
+                <h2 class="text-6xl font-bold mb-6">Digital Nebula</h2>
+                <p class="text-xl text-zinc-400 leading-relaxed">
+                    Every scroll movement triggers a spatial calculation, warping the fabric of the interface. 
+                    This is where performance meets poetry.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="scroll-section">
+        <div class="max-w-5xl text-center px-6">
+            <span class="text-blue-500 font-mono mb-4 block">03 // PHILOSOPHY</span>
+            <h2 class="text-5xl md:text-7xl font-light italic leading-tight scale-up">
+                "The interface is no longer a tool, but an <span class="text-white font-bold underline decoration-blue-500">environment</span> that reacts to your gaze."
+            </h2>
+        </div>
+    </section>
+
+    <section class="scroll-section px-10">
+        <div class="grid grid-cols-3 gap-4 w-full max-w-6xl h-[60vh]">
+            <div class="bg-zinc-800 rounded-2xl stagger-card" style="transition-delay: 100ms;"></div>
+            <div class="bg-blue-600 rounded-2xl stagger-card" style="transition-delay: 200ms;"></div>
+            <div class="bg-zinc-800 rounded-2xl stagger-card" style="transition-delay: 300ms;"></div>
+        </div>
+    </section>
+
+    <footer class="h-[50vh] flex flex-col items-center justify-center border-t border-zinc-800">
+        <h2 class="text-4xl font-bold mb-8">Ready to build?</h2>
+        <button class="px-12 py-4 border border-white rounded-full hover:bg-white hover:text-black transition-all duration-500 uppercase tracking-widest text-sm">
+            Start Project
+        </button>
+    </footer>
+
+    <script>
+        const progressBar = document.getElementById('progress');
+        const ghostText = document.getElementById('ghost');
+        const images = document.querySelectorAll('.parallax-img');
+        const scaleUpTexts = document.querySelectorAll('.scale-up');
+        const cards = document.querySelectorAll('.stagger-card');
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrolled / maxScroll) * 100;
+
+            // 1. Update Progress Bar
+            progressBar.style.width = scrollPercent + '%';
+
+            // 2. Ghost Text Parallax (Moves horizontal on scroll)
+            ghostText.style.transform = `translateX(${50 - scrollPercent * 2}%) translateY(40vh)`;
+
+            // 3. Image Zoom/Parallax
+            images.forEach(img => {
+                const speed = 0.05;
+                img.style.transform = `scale(${1.5 - (scrollPercent * 0.005)}) translateY(${scrolled * speed}px)`;
+            });
+
+            // 4. Scale Text on Scroll
+            scaleUpTexts.forEach(text => {
+                const rect = text.getBoundingClientRect();
+                if(rect.top < window.innerHeight && rect.bottom > 0) {
+                    const factor = 1 - (rect.top / window.innerHeight);
+                    text.style.transform = `scale(${0.8 + factor * 0.2})`;
+                    text.style.opacity = factor;
+                }
+            });
+
+            // 5. Stagger Cards
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                if(rect.top < window.innerHeight * 0.8) {
+                    card.style.transform = 'translateY(0)';
+                    card.style.opacity = '1';
+                } else {
+                    card.style.transform = 'translateY(100px)';
+                    card.style.opacity = '0';
+                }
+            });
+        });
+
+        // Initialize Card States
+        cards.forEach(card => {
+            card.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(100px)';
+        });
+    </script>
+</body>
+</html>

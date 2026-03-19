@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Dimensional Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap');
+
+        body { background-color: #000; cursor: crosshair; overflow-x: hidden; }
+        .font-sync { font-family: 'Syncopate', sans-serif; }
+
+        /* The Masking Effect */
+        .masked-text {
+            background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: brightness(1.2) contrast(1.2);
+        }
+
+        /* Smooth floating animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+        .float-anim { animation: float 6s ease-in-out infinite; }
+    </style>
+</head>
+<body class="text-white selection:bg-fuchsia-500">
+
+    <div class="fixed inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+
+    <header class="fixed top-0 w-full p-10 flex justify-between items-end z-50 mix-blend-difference">
+        <h2 class="font-sync text-2xl tracking-widest">NEO</h2>
+        <div class="flex flex-col items-end space-y-2">
+            <div class="h-[1px] w-20 bg-white"></div>
+            <p class="text-[10px] tracking-[0.3em]">EST. 2026</p>
+        </div>
+    </header>
+
+    <main class="relative z-10 min-h-[200vh]">
+        <section class="h-screen flex flex-col items-center justify-center sticky top-0">
+            
+            <div id="bg-layer" class="absolute text-[25vw] font-sync opacity-10 select-none transition-transform duration-75">
+                VOID
+            </div>
+
+            <div id="mid-layer" class="relative z-20 float-anim transition-transform duration-100">
+                <h1 class="font-sync text-[10vw] md:text-[12vw] leading-none text-center masked-text uppercase italic">
+                    Infinite<br>Motion
+                </h1>
+            </div>
+
+            <div id="top-layer" class="absolute inset-0 pointer-events-none transition-transform duration-150">
+                <div class="absolute top-1/4 left-1/4 w-4 h-4 bg-fuchsia-500 rounded-full blur-sm shadow-[0_0_20px_#d946ef]"></div>
+                <div class="absolute bottom-1/3 right-1/4 w-2 h-2 bg-cyan-400 rounded-full blur-sm shadow-[0_0_20px_#22d3ee]"></div>
+            </div>
+        </section>
+
+        <section class="relative z-30 h-screen bg-white text-black p-20 flex items-center">
+            <div class="max-w-4xl">
+                <h3 class="text-7xl font-bold tracking-tighter mb-8">Breaking the 2D Plane.</h3>
+                <p class="text-2xl leading-relaxed text-zinc-500">
+                    We don't just build websites. We build <span class="text-black underline decoration-fuchsia-500 underline-offset-8">spatial interactions</span> that react to the weight of your presence.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Multi-Layer Parallax Logic
+        window.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            // Calculate offset from center (-1 to 1)
+            const moveX = (clientX - centerX) / centerX;
+            const moveY = (clientY - centerY) / centerY;
+
+            // Layer 1: Background (Subtle movement)
+            document.getElementById('bg-layer').style.transform = 
+                `translate3d(${moveX * 20}px, ${moveY * 20}px, 0)`;
+
+            // Layer 2: Main Text (Medium movement)
+            document.getElementById('mid-layer').style.transform = 
+                `translate3d(${moveX * -50}px, ${moveY * -50}px, 0)`;
+
+            // Layer 3: Particles (Aggressive movement)
+            document.getElementById('top-layer').style.transform = 
+                `translate3d(${moveX * -100}px, ${moveY * -100}px, 0)`;
+        });
+
+        // Scroll Reveal logic
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const midLayer = document.getElementById('mid-layer');
+            // Scale the text down as you scroll
+            midLayer.style.opacity = 1 - (scrolled / 700);
+            midLayer.style.transform = `scale(${1 + scrolled / 1000})`;
+        });
+    </script>
+</body>
+</html>

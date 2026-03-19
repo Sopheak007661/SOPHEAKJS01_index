@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;900&family=Outfit:wght@300;600&display=swap');
+        
+        body { 
+            background-color: #f4f4f2; /* Warm Paper Tone */
+            color: #1a1a1a; 
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-brand { font-family: 'Unbounded', sans-serif; }
+
+        /* The "Magazine" Card Style */
+        .mag-card {
+            background: #ffffff;
+            border: 2px solid #1a1a1a;
+            box-shadow: 10px 10px 0px #1a1a1a; /* Hard Brutalist Shadow */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .mag-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 16px 16px 0px #6366f1; /* Color shift on hover */
+        }
+
+        /* Animated Title */
+        .char {
+            display: inline-block;
+            transform: translateY(100%);
+            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .visible .char { transform: translateY(0); }
+
+        .line { overflow: hidden; }
+    </style>
+</head>
+<body class="selection:bg-indigo-500 selection:text-white">
+
+    <nav class="fixed left-0 top-0 h-full w-20 border-r-2 border-black bg-white z-50 hidden md:flex flex-col items-center py-10 justify-between">
+        <div class="font-brand font-black text-xl rotate-[-90deg] origin-center">SOPHEAK</div>
+        <div class="flex flex-col gap-8 items-center uppercase tracking-tighter text-[10px] font-bold">
+            <a href="#" class="hover:text-indigo-600">Work</a>
+            <a href="#" class="hover:text-indigo-600">About</a>
+            <div class="h-20 w-[2px] bg-black"></div>
+        </div>
+    </nav>
+
+    <main class="md:ml-20">
+        
+        <section class="min-h-screen flex flex-col justify-center px-10 md:px-24 py-20">
+            <div class="line mb-2">
+                <h1 class="font-brand text-[12vw] font-black leading-none tracking-tighter uppercase char-trigger">
+                    <span class="char" style="transition-delay: 0.1s">S</span>
+                    <span class="char" style="transition-delay: 0.2s">O</span>
+                    <span class="char" style="transition-delay: 0.3s">P</span>
+                    <span class="char" style="transition-delay: 0.4s">H</span>
+                    <span class="char" style="transition-delay: 0.5s">E</span>
+                    <span class="char" style="transition-delay: 0.6s">A</span>
+                    <span class="char" style="transition-delay: 0.7s">K</span>
+                </h1>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-start mt-10">
+                <p class="max-w-md text-2xl font-light leading-snug">
+                    Transforming <span class="font-bold underline">abstract ideas</span> into high-performance digital experiences.
+                </p>
+                <div class="mt-10 md:mt-0 font-brand text-indigo-600 animate-pulse">
+                    [ BASED IN 2026 ]
+                </div>
+            </div>
+        </section>
+
+        <section class="px-10 md:px-24 pb-40 grid grid-cols-1 md:grid-cols-2 gap-16">
+            
+            <div class="mag-card p-4 group">
+                <div class="overflow-hidden bg-zinc-200 aspect-[4/3] mb-6 border-2 border-black">
+                    <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80" 
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-brand text-2xl font-black uppercase mb-2">Interface Theory</h3>
+                    <p class="opacity-60">Complex systems, simplified.</p>
+                </div>
+            </div>
+
+            <div class="mag-card p-4 group md:mt-40">
+                <div class="overflow-hidden bg-zinc-200 aspect-[4/3] mb-6 border-2 border-black">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80" 
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-brand text-2xl font-black uppercase mb-2">Visual Logic</h3>
+                    <p class="opacity-60">Design that makes sense.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <footer class="p-10 md:p-24 bg-black text-white rounded-t-[4rem]">
+            <h2 class="font-brand text-6xl md:text-8xl font-black uppercase leading-none mb-10">
+                Let's <br> Build.
+            </h2>
+            <button class="bg-indigo-500 hover:bg-white hover:text-black text-white px-10 py-5 rounded-full font-brand text-sm transition-all duration-300">
+                START A PROJECT
+            </button>
+        </footer>
+    </main>
+
+    <script>
+        // 1. Text Reveal on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.char-trigger').parentElement.classList.add('visible');
+        });
+
+        // 2. Parallax Grid Movement
+        window.addEventListener('scroll', () => {
+            const cards = document.querySelectorAll('.mag-card');
+            const scrolled = window.scrollY;
+
+            cards.forEach((card, i) => {
+                const speed = (i + 1) * 0.1;
+                card.style.transform = `translateY(${scrolled * -speed * 0.2}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chromatic Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            transition: background-color 0.8s ease; 
+            overflow-x: hidden;
+            background-color: #0f172a;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Create a smooth "liquid" scroll feel */
+        .smooth-item {
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <div id="progress" class="fixed top-0 left-0 h-1.5 z-[100] bg-white mix-blend-difference transition-all duration-100"></div>
+
+    <section class="h-screen flex flex-col items-center justify-center p-10">
+        <div class="smooth-item text-center">
+            <h1 class="text-[12vw] font-black tracking-tighter italic leading-none mb-4">
+                CHROMA
+            </h1>
+            <p class="text-xl tracking-[0.5em] opacity-60 uppercase">The Color of Motion</p>
+        </div>
+    </section>
+
+    <section class="min-h-screen py-40 px-10 flex flex-col items-center gap-40">
+        <div class="glass smooth-item p-12 rounded-[4rem] max-w-4xl w-full flex flex-col md:flex-row gap-10 items-center">
+            <div class="w-full md:w-1/2 aspect-square rounded-3xl overflow-hidden bg-gradient-to-tr from-orange-500 to-rose-500 animate-pulse"></div>
+            <div class="w-full md:w-1/2">
+                <h2 class="text-5xl font-bold mb-6">Reactive Logic</h2>
+                <p class="text-lg opacity-70 leading-relaxed">As you scroll, the environment adapts. The background isn't just a color; it's a state of mind that follows your journey.</p>
+            </div>
+        </div>
+
+        <div class="glass smooth-item p-12 rounded-[4rem] max-w-4xl w-full flex flex-col md:flex-row-reverse gap-10 items-center">
+            <div class="w-full md:w-1/2 aspect-square rounded-3xl overflow-hidden bg-gradient-to-tr from-cyan-500 to-blue-600"></div>
+            <div class="w-full md:w-1/2">
+                <h2 class="text-5xl font-bold mb-6">Fluid Physics</h2>
+                <p class="text-lg opacity-70 leading-relaxed">Each element has weight. Moving through the page feels like moving through silk, with color guiding every interaction.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="h-screen flex items-center justify-center overflow-hidden">
+        <h2 id="warp-text" class="text-[18vw] font-black whitespace-nowrap opacity-20 transition-transform duration-75">
+            VELOCITY VELOCITY VELOCITY
+        </h2>
+    </section>
+
+    <footer class="py-40 text-center glass border-t-0">
+        <h3 class="text-8xl font-black mb-10 italic">ENDLESS.</h3>
+        <button class="bg-white text-black px-12 py-5 rounded-full font-bold text-xl hover:scale-110 active:scale-95 transition-transform">
+            Start Journey
+        </button>
+    </footer>
+
+    <script>
+        // Color Palette for scrolling
+        const colors = [
+            '#0f172a', // Slate
+            '#4c1d95', // Purple
+            '#831843', // Rose
+            '#164e63', // Cyan
+            '#064e3b', // Emerald
+            '#000000'  // Black
+        ];
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollFraction = scrolled / maxScroll;
+            
+            // 1. Update Progress Bar
+            document.getElementById('progress').style.width = (scrollFraction * 100) + '%';
+
+            // 2. Background Color Interpolation
+            const colorIndex = Math.min(
+                Math.floor(scrollFraction * colors.length),
+                colors.length - 1
+            );
+            document.body.style.backgroundColor = colors[colorIndex];
+
+            // 3. Smooth Item Reveal & Tilt
+            const items = document.querySelectorAll('.smooth-item');
+            items.forEach((item, index) => {
+                const rect = item.getBoundingClientRect();
+                const isVisible = rect.top < window.innerHeight * 0.85;
+                
+                if (isVisible) {
+                    item.style.opacity = '1';
+                    // Add a subtle tilt based on scroll
+                    const tilt = (rect.top - window.innerHeight / 2) * 0.05;
+                    item.style.transform = `translateY(0) rotateX(${tilt}deg)`;
+                } else {
+                    item.style.opacity = '0';
+                    item.style.transform = `translateY(50px)`;
+                }
+            });
+
+            // 4. Warp Text Horizontal Scroll
+            const warpText = document.getElementById('warp-text');
+            warpText.style.transform = `translateX(${-scrollFraction * 50}%)`;
+        });
+
+        // Initial state
+        document.querySelectorAll('.smooth-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(50px)';
+        });
+    </script>
+</body>
+</html>

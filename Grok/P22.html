@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Kinetic Monolith</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@900&family=Inter:wght@400;700&display=swap');
+        
+        body { background: #fdfdfd; color: #000; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .font-monolith { font-family: 'Unbounded', sans-serif; }
+
+        /* The scrolling text track */
+        .marquee {
+            white-space: nowrap;
+            display: flex;
+            overflow: hidden;
+            font-size: 15vh;
+            line-height: 1;
+            background: #000;
+            color: #fff;
+            padding: 20px 0;
+            transform: rotate(-3deg) scale(1.1);
+            margin-top: 5vh;
+        }
+
+        .marquee-inner {
+            display: flex;
+            animation: marquee 20s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Split screen container */
+        .split-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+        }
+
+        .side-left { border-right: 1px solid #eee; }
+        
+        .sticky-element {
+            position: sticky;
+            top: 20vh;
+            height: fit-content;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed top-0 w-full p-10 flex justify-between items-center z-50 mix-blend-difference text-white">
+        <div class="font-monolith text-xl tracking-tighter">S.</div>
+        <div class="text-[10px] font-bold uppercase tracking-widest">Digital Architect</div>
+    </nav>
+
+    <header class="h-[120vh] flex flex-col justify-center items-center text-center">
+        <h1 class="font-monolith text-[18vw] leading-none mb-4 tracking-tighter uppercase">
+            SOPHEAK
+        </h1>
+        <div class="marquee">
+            <div class="marquee-inner">
+                <span class="px-10 font-monolith uppercase">Creative — Developer — Designer — Engineer —&nbsp;</span>
+                <span class="px-10 font-monolith uppercase">Creative — Developer — Designer — Engineer —&nbsp;</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="split-section border-t border-black">
+        <div class="side-left p-10 md:p-24">
+            <div class="sticky-element">
+                <h2 class="font-monolith text-6xl uppercase leading-none mb-10">Selected <br> Works</h2>
+                <p class="text-xl text-zinc-500 max-w-sm">Every project is an exploration of space, logic, and human interaction.</p>
+            </div>
+        </div>
+
+        <div class="side-right p-10 md:p-24 flex flex-col gap-40">
+            <div class="project-block group">
+                <div class="w-full aspect-[3/4] bg-zinc-100 overflow-hidden mb-8 border border-black/5">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" 
+                         class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
+                </div>
+                <h3 class="font-monolith text-2xl uppercase">System Alpha</h3>
+            </div>
+
+            <div class="project-block group">
+                <div class="w-full aspect-[3/4] bg-zinc-100 overflow-hidden mb-8 border border-black/5">
+                    <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?auto=format&fit=crop&w=800&q=80" 
+                         class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
+                </div>
+                <h3 class="font-monolith text-2xl uppercase">Nexus Core</h3>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black text-white p-24 text-center">
+        <h2 class="font-monolith text-[15vw] leading-none mb-10 tracking-tighter">SOPHEAK</h2>
+        <a href="mailto:hello@sopheak.com" class="text-2xl underline hover:text-zinc-400 transition-colors">GET IN TOUCH</a>
+    </footer>
+
+    <script>
+        // Parallax effect for the hero name
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const heroText = document.querySelector('h1');
+            heroText.style.transform = `translateY(${scrolled * 0.3}px) scale(${1 - scrolled * 0.0005})`;
+            heroText.style.opacity = 1 - (scrolled / 1000);
+        });
+    </script>
+</body>
+</html>

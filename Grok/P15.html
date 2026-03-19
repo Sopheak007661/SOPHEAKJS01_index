@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@900&display=swap');
+        body { background: #000; color: #fff; font-family: 'Unbounded', sans-serif; transition: background 0.8s ease; }
+        .project-card { transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.2, 0, 0.2, 1); }
+        .section-label { writing-mode: vertical-rl; }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed top-10 left-10 z-[100] mix-blend-difference">
+        <h1 class="text-2xl font-black tracking-tighter">SOPHEAK.</h1>
+    </nav>
+
+    <section class="min-h-screen flex items-center justify-center relative bg-section" data-color="#001233">
+        <h2 class="text-[20vw] opacity-20 absolute select-none">VISION</h2>
+        <div class="project-card w-full max-w-4xl p-20 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[4rem]">
+             <p class="text-cyan-400 mb-4 font-mono uppercase">Introduction</p>
+             <h3 class="text-6xl font-black mb-6">Building Digital Empires.</h3>
+        </div>
+    </section>
+
+    <section class="min-h-screen flex items-center justify-center relative bg-section" data-color="#1e0033">
+        <div class="project-card w-full max-w-4xl p-20 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[4rem] translate-x-20">
+             <p class="text-purple-400 mb-4 font-mono uppercase">Philosophy</p>
+             <h3 class="text-6xl font-black mb-6">SOPHEAK is Motion.</h3>
+        </div>
+    </section>
+
+    <section class="min-h-screen flex items-center justify-center relative bg-section" data-color="#002211">
+        <div class="project-card w-full max-w-4xl p-20 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[4rem] -translate-x-20">
+             <p class="text-emerald-400 mb-4 font-mono uppercase">Contact</p>
+             <h3 class="text-6xl font-black mb-6">Reach the Future.</h3>
+        </div>
+    </section>
+
+    <script>
+        // Color Switcher & 3D Physics
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const sections = document.querySelectorAll('.bg-section');
+            const cards = document.querySelectorAll('.project-card');
+
+            sections.forEach((section, i) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
+                    document.body.style.backgroundColor = section.getAttribute('data-color');
+                }
+            });
+
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const center = rect.top + rect.height / 2;
+                const rotation = (window.innerHeight / 2 - center) / 20;
+                card.style.transform = `perspective(1000px) rotateX(${rotation}deg) scale(${1 - Math.abs(rotation)/200})`;
+            });
+        });
+    </script>
+</body>
+</html>

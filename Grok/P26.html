@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Factory OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        
+        body { 
+            background: #09090b; 
+            color: #fafafa; 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .status-pill {
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .row-active { border-left: 3px solid #3b82f6; }
+        .row-break { border-left: 3px solid #eab308; }
+        .row-off { border-left: 3px solid #ef4444; }
+
+        .fade-out {
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+            <div>
+                <h1 class="text-4xl font-extrabold tracking-tighter">SOPHEAK <span class="text-blue-500">SYSTEMS</span></h1>
+                <p class="text-zinc-500 text-sm">Industrial Workforce Reporting & Management</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="exportData()" class="glass px-6 py-2 rounded-xl text-sm font-semibold hover:bg-white/10 transition-all">Export Report</button>
+                <button onclick="toggleModal(true)" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-blue-600/20">+ Add Worker</button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="glass p-5 rounded-2xl">
+                <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Total Workforce</p>
+                <h3 id="stat-total" class="text-2xl font-black mt-1">0</h3>
+            </div>
+            <div class="glass p-5 rounded-2xl">
+                <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest text-blue-400">Active Now</p>
+                <h3 id="stat-active" class="text-2xl font-black mt-1 text-blue-400">0</h3>
+            </div>
+            <div class="glass p-5 rounded-2xl">
+                <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest text-yellow-400">On Break</p>
+                <h3 id="stat-break" class="text-2xl font-black mt-1 text-yellow-400">0</h3>
+            </div>
+            <div class="glass p-5 rounded-2xl">
+                <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest text-red-400">Off Shift</p>
+                <h3 id="stat-off" class="text-2xl font-black mt-1 text-red-400">0</h3>
+            </div>
+        </div>
+
+        <div class="glass p-4 rounded-3xl mb-6 flex flex-col md:flex-row gap-4">
+            <div class="flex-1 relative">
+                <input type="text" id="searchInput" placeholder="Search workers by name, ID, or department..." 
+                       class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-12 focus:outline-none focus:border-blue-500 transition-all">
+                <span class="absolute left-4 top-3.5 opacity-30">🔍</span>
+            </div>
+            <div class="flex gap-2">
+                <select id="filterDept" class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500">
+                    <option value="all">All Departments</option>
+                    <option value="Assembly">Assembly</option>
+                    <option value="Quality">Quality Control</option>
+                    <option value="Logistics">Logistics</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="glass rounded-3xl overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-white/5 text-zinc-500 text-[10px] font-black uppercase tracking-widest">
+                    <tr>
+                        <th class="p-6">Employee Info</th>
+                        <th class="p-6">Department</th>
+                        <th class="p-6">Shift Status</th>
+                        <th class="p-6">Productivity</th>
+                        <th class="p-6 text-right">Settings</th>
+                    </tr>
+                </thead>
+                <tbody id="workerTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-[100] flex items-center justify-center p-4">
+        <div class="glass w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl">
+            <h3 class="text-2xl font-extrabold mb-6">New Worker Record</h3>
+            <div class="space-y-4">
+                <input type="text" id="newName" placeholder="Full Name" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 outline-none focus:border-blue-500">
+                <input type="text" id="newId" placeholder="Employee ID (#0000)" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 outline-none focus:border-blue-500">
+                <select id="newDept" class="w-full bg-zinc-900 border border-white/10 rounded-xl p-4 outline-none">
+                    <option>Assembly</option>
+                    <option>Quality</option>
+                    <option>Logistics</option>
+                </select>
+            </div>
+            <div class="flex gap-4 mt-10">
+                <button onclick="toggleModal(false)" class="flex-1 py-4 font-bold opacity-50 hover:opacity-100">Cancel</button>
+                <button onclick="addWorker()" class="flex-1 bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-bold">Save Worker</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // VIRTUAL DATABASE
+        let workers = [
+            { id: '101', name: 'Sopheak Pro', dept: 'Assembly', status: 'active', score: 98 },
+            { id: '102', name: 'Mony Arun', dept: 'Quality', status: 'break', score: 85 },
+            { id: '103', name: 'Ratana Kim', dept: 'Logistics', status: 'off', score: 0 }
+        ];
+
+        // RENDER SYSTEM
+        function renderTable() {
+            const tbody = document.getElementById('workerTableBody');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const deptFilter = document.getElementById('filterDept').value;
+            
+            tbody.innerHTML = '';
+
+            const filtered = workers.filter(w => {
+                const matchesSearch = w.name.toLowerCase().includes(searchTerm) || w.id.includes(searchTerm);
+                const matchesDept = deptFilter === 'all' || w.dept === deptFilter;
+                return matchesSearch && matchesDept;
+            });
+
+            filtered.forEach(w => {
+                const tr = document.createElement('tr');
+                tr.className = `border-t border-white/5 transition-all hover:bg-white/[0.02] row-${w.status}`;
+                tr.innerHTML = `
+                    <td class="p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-xs">${w.name.split(' ').map(n=>n[0]).join('')}</div>
+                            <div>
+                                <p class="font-bold text-sm">${w.name}</p>
+                                <p class="text-[10px] text-zinc-500 italic">UID: #${w.id}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="p-6 text-sm text-zinc-400">${w.dept}</td>
+                    <td class="p-6">
+                        <span class="status-pill ${getStatusClass(w.status)}">${w.status}</span>
+                    </td>
+                    <td class="p-6">
+                        <div class="w-full bg-zinc-800 h-1 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500" style="width: ${w.score}%"></div>
+                        </div>
+                    </td>
+                    <td class="p-6 text-right">
+                        <button onclick="deleteWorker('${w.id}')" class="text-zinc-600 hover:text-red-500 transition-colors">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            updateStats();
+        }
+
+        function getStatusClass(status) {
+            if(status === 'active') return 'bg-blue-500/10 text-blue-400';
+            if(status === 'break') return 'bg-yellow-500/10 text-yellow-400';
+            return 'bg-red-500/10 text-red-400';
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').innerText = workers.length;
+            document.getElementById('stat-active').innerText = workers.filter(w => w.status === 'active').length;
+            document.getElementById('stat-break').innerText = workers.filter(w => w.status === 'break').length;
+            document.getElementById('stat-off').innerText = workers.filter(w => w.status === 'off').length;
+        }
+
+        // ACTIONS
+        function toggleModal(show) {
+            document.getElementById('modal').style.display = show ? 'flex' : 'none';
+        }
+
+        function addWorker() {
+            const name = document.getElementById('newName').value;
+            const id = document.getElementById('newId').value;
+            const dept = document.getElementById('newDept').value;
+            
+            if(!name || !id) return alert("Please fill all fields");
+
+            workers.push({ id, name, dept, status: 'active', score: 100 });
+            toggleModal(false);
+            renderTable();
+            
+            // Clear inputs
+            document.getElementById('newName').value = '';
+            document.getElementById('newId').value = '';
+        }
+
+        function deleteWorker(id) {
+            if(confirm("Permanently delete this worker record?")) {
+                workers = workers.filter(w => w.id !== id);
+                renderTable();
+            }
+        }
+
+        function exportData() {
+            alert("Report Exported to Factory_Log_2026.csv");
+        }
+
+        // EVENT LISTENERS
+        document.getElementById('searchInput').addEventListener('input', renderTable);
+        document.getElementById('filterDept').addEventListener('change', renderTable);
+
+        // INITIAL RENDER
+        renderTable();
+    </script>
+</body>
+</html>

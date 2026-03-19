@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Structural Design</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&display=swap');
+        
+        body { 
+            background-color: #fbfbfb; 
+            color: #111; 
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* The Big Name that stays behind everything */
+        .background-name {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 25vw;
+            font-weight: 700;
+            color: #efefef;
+            z-index: -1;
+            letter-spacing: -0.05em;
+            pointer-events: none;
+        }
+
+        .content-card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .dot-grid {
+            background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+    </style>
+</head>
+<body class="dot-grid">
+
+    <div class="background-name" id="bg-name">SOPHEAK</div>
+
+    <nav class="fixed top-0 w-full p-10 flex justify-between items-start z-50 mix-blend-multiply">
+        <div class="font-bold text-2xl tracking-tighter">S.</div>
+        <div class="text-right">
+            <p class="text-xs font-bold uppercase tracking-widest">Available for Projects</p>
+            <p class="text-xs opacity-50">2026 Edition</p>
+        </div>
+    </nav>
+
+    <main class="relative z-10 pt-[30vh]">
+        
+        <div class="h-screen flex items-center justify-center px-6">
+            <div class="content-card p-12 md:p-20 rounded-[2rem] max-w-3xl">
+                <span class="text-blue-600 font-bold text-sm tracking-widest uppercase mb-4 block">Introduction</span>
+                <h1 class="text-5xl md:text-7xl font-bold leading-none mb-8 tracking-tight">
+                    Engineering <br> Simple Beauty.
+                </h1>
+                <p class="text-xl text-zinc-500 leading-relaxed max-w-lg">
+                    I am SOPHEAK. I translate complex problems into elegant, high-performance interfaces.
+                </p>
+            </div>
+        </div>
+
+        <div class="h-screen flex items-center justify-start px-20">
+            <div class="content-card w-full max-w-xl aspect-video rounded-[2rem] overflow-hidden group">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80" 
+                     class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
+            </div>
+        </div>
+
+        <div class="h-screen flex items-center justify-end px-20">
+            <div class="content-card p-12 rounded-[2rem] max-w-md">
+                <h2 class="text-3xl font-bold mb-4">Precision First</h2>
+                <p class="text-zinc-500">Every interaction is calculated. Every pixel is intentional. Built for the modern web.</p>
+                <div class="mt-8 flex gap-4">
+                    <div class="h-2 w-2 rounded-full bg-blue-600"></div>
+                    <div class="h-2 w-2 rounded-full bg-zinc-200"></div>
+                    <div class="h-2 w-2 rounded-full bg-zinc-200"></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const bgName = document.getElementById('bg-name');
+        
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollFraction = scrolled / maxScroll;
+
+            // 1. Move the background name horizontally as you scroll vertically
+            const moveX = (scrollFraction * 100) - 50; 
+            bgName.style.transform = `translate(calc(-50% + ${moveX}px), -50%)`;
+            
+            // 2. Fade the background name out slightly as you scroll down
+            bgName.style.opacity = 0.1 - (scrollFraction * 0.05);
+
+            // 3. Subtle card parallax
+            const cards = document.querySelectorAll('.content-card');
+            cards.forEach((card, i) => {
+                const speed = (i + 1) * 0.1;
+                card.style.transform = `translateY(${scrolled * -speed * 0.2}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

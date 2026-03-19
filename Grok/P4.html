@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultra-Reflexive Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
+        
+        body { cursor: none; background-color: #050505; overflow-x: hidden; }
+        
+        /* The Custom Cursor */
+        #cursor {
+            width: 20px; height: 20px;
+            background: white; border-radius: 50%;
+            position: fixed; pointer-events: none;
+            z-index: 9999; mix-blend-mode: difference;
+            transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+        }
+
+        /* 3D Perspective Container */
+        .perspective-container {
+            perspective: 1000px;
+        }
+
+        .tilt-card {
+            transition: transform 0.1s ease-out;
+            transform-style: preserve-3d;
+        }
+
+        .hero-text { font-family: 'Inter', sans-serif; line-height: 0.8; }
+    </style>
+</head>
+<body class="text-white">
+
+    <div id="cursor"></div>
+
+    <nav class="fixed top-0 w-full p-8 flex justify-between items-center z-50">
+        <div class="text-xl font-bold tracking-tighter hover-scale">GEMINI.STUDIO</div>
+        <div class="space-x-8 text-sm font-medium">
+            <a href="#" class="hover-scale opacity-50 hover:opacity-100 transition-opacity">WORK</a>
+            <a href="#" class="hover-scale opacity-50 hover:opacity-100 transition-opacity">ABOUT</a>
+            <a href="#" class="bg-white text-black px-5 py-2 rounded-full hover-scale">CONTACT</a>
+        </div>
+    </nav>
+
+    <main class="perspective-container h-screen w-full flex items-center justify-center">
+        <div id="hero" class="tilt-card relative">
+            
+            <div class="absolute -inset-20 bg-blue-600/20 blur-[120px] rounded-full"></div>
+
+            <div class="relative z-10 text-center">
+                <h1 class="hero-text text-[12vw] uppercase select-none">
+                    Future<br><span class="text-transparent border-2 border-white px-4 bg-clip-text">Logic</span>
+                </h1>
+                <p class="mt-6 text-slate-400 tracking-[0.5em] uppercase text-xs">Based in Tokyo & London</p>
+            </div>
+
+            <div class="absolute -top-10 -right-10 w-32 h-32 border border-white/10 rounded-xl rotate-12 animate-pulse" style="transform: translateZ(50px)"></div>
+            <div class="absolute -bottom-20 -left-20 w-48 h-48 border border-white/5 rounded-full" style="transform: translateZ(100px)"></div>
+        </div>
+    </main>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        const hero = document.getElementById('hero');
+        const hoverables = document.querySelectorAll('.hover-scale');
+
+        // 1. Smooth Cursor Follow
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+
+            // 2. Hero 3D Tilt Logic
+            const x = (window.innerWidth / 2 - e.clientX) / 25;
+            const y = (window.innerHeight / 2 - e.clientY) / 25;
+            hero.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+        });
+
+        // 3. Cursor Interaction with UI Elements
+        hoverables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(4)';
+                cursor.style.background = 'rgba(255,255,255,0.2)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursor.style.background = 'white';
+            });
+        });
+
+        // 4. Click Reflex
+        document.addEventListener('mousedown', () => {
+            cursor.style.transform = 'scale(0.8)';
+        });
+        document.addEventListener('mouseup', () => {
+            cursor.style.transform = 'scale(1)';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Factory Pro Max</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../output.css">
+   
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { background: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .status-btn { transition: all 0.2s; }
+        .status-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex">
+
+    <div class="flex-1 max-w-6xl mx-auto">
+        <header class="flex justify-between items-end mb-10">
+            <div>
+                <h1 class="text-4xl font-black tracking-tighter">FACTORY <span class="text-indigo-500">OS</span></h1>
+                <p class="text-zinc-500 text-sm">Operator: <span class="text-zinc-300 font-bold">SOPHEAK</span></p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="toggleSidebar()" class="glass px-6 py-3 rounded-2xl text-sm font-bold hover:bg-white/5">📋 Shift Logs</button>
+                <button onclick="toggleModal(true)" class="bg-indigo-600 px-6 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-indigo-600/20 hover:bg-indigo-500">+ Register</button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="glass p-6 rounded-[2rem] border-b-4 border-b-indigo-500">
+                <h4 class="text-zinc-500 text-[10px] font-black uppercase tracking-widest">Global Efficiency</h4>
+                <div class="text-4xl font-black mt-2">94.2%</div>
+            </div>
+            <div class="glass p-6 rounded-[2rem] border-b-4 border-b-emerald-500">
+                <h4 class="text-zinc-500 text-[10px] font-black uppercase tracking-widest text-emerald-500">Safety Incident Free</h4>
+                <div class="text-4xl font-black mt-2 text-emerald-500">128 Days</div>
+            </div>
+            <div class="glass p-6 rounded-[2rem] border-b-4 border-b-orange-500">
+                <h4 class="text-zinc-500 text-[10px] font-black uppercase tracking-widest text-orange-500">Pending Reports</h4>
+                <div class="text-4xl font-black mt-2 text-orange-500">07</div>
+            </div>
+        </div>
+
+        <div class="glass p-3 rounded-2xl mb-6">
+            <input type="text" id="masterSearch" onkeyup="filterWorkers()" placeholder="Quick find worker or department..." 
+                   class="w-full bg-transparent p-3 outline-none text-lg font-medium">
+        </div>
+
+        <div class="glass rounded-[2.5rem] overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-white/5 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                    <tr>
+                        <th class="p-6">Employee</th>
+                        <th class="p-6">Department</th>
+                        <th class="p-6">Current Status</th>
+                        <th class="p-6 text-right">Commands</th>
+                    </tr>
+                </thead>
+                <tbody id="workerRows">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="historySidebar" class="sidebar fixed top-0 right-0 h-full w-80 glass translate-x-full z-50 p-8">
+        <div class="flex justify-between items-center mb-10">
+            <h3 class="text-xl font-bold">Shift Timeline</h3>
+            <button onclick="toggleSidebar()" class="text-zinc-500">✕</button>
+        </div>
+        <div id="logList" class="space-y-6">
+            <div class="border-l-2 border-indigo-500 pl-4">
+                <p class="text-xs text-zinc-500 font-bold">08:00 AM</p>
+                <p class="text-sm">Sopheak Pro: <span class="text-indigo-400">Clocked In</span></p>
+            </div>
+            <div class="border-l-2 border-yellow-500 pl-4 opacity-50">
+                <p class="text-xs text-zinc-500 font-bold">12:30 PM</p>
+                <p class="text-sm">Mony Arun: <span class="text-yellow-400">Lunch Break</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="addModal" class="fixed inset-0 bg-black/90 hidden z-[100] flex items-center justify-center p-6">
+        <div class="glass max-w-md w-full rounded-[3rem] p-12">
+            <h2 class="text-3xl font-black mb-8">Register Worker</h2>
+            <div class="space-y-4">
+                <input type="text" id="addName" placeholder="Full Name" class="w-full glass p-4 rounded-2xl outline-none focus:border-indigo-500">
+                <select id="addDept" class="w-full glass p-4 rounded-2xl outline-none bg-zinc-900">
+                    <option>Assembly</option>
+                    <option>Logistics</option>
+                    <option>Quality Control</option>
+                </select>
+                <button onclick="saveWorker()" class="w-full bg-indigo-600 py-4 rounded-2xl font-black text-white mt-6">Confirm Registration</button>
+                <button onclick="toggleModal(false)" class="w-full text-zinc-500 text-sm font-bold py-2">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+   <script>
+    const API_URL = 'http://localhost:3000/workers';
+
+    // UI HELPER: Open/Close the Registration Window
+    function toggleModal(show) {
+        document.getElementById('addModal').style.display = show ? 'flex' : 'none';
+    }
+
+    // UI HELPER: Toggle the History Sidebar
+    function toggleSidebar() {
+        document.getElementById('historySidebar').classList.toggle('translate-x-full');
+    }
+
+    // 1. LOAD FROM MYSQL
+    async function fetchWorkers() {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error("Server error");
+            const data = await response.json();
+            render(data);
+        } catch (error) {
+            console.error("Connection Error:", error);
+        }
+    }
+
+    function render(workers) {
+        const table = document.getElementById('workerRows');
+        table.innerHTML = '';
+
+        workers.forEach((worker) => {
+            const tr = document.createElement('tr');
+            tr.className = "border-t border-white/5 hover:bg-white/[0.02]";
+            tr.innerHTML = `
+                <td class="p-6 font-bold text-blue-100">${worker.name}</td>
+                <td class="p-6 text-sm text-zinc-500">${worker.dept}</td>
+                <td class="p-6 text-xs text-zinc-600">${new Date(worker.join_date).toLocaleDateString()}</td>
+                <td class="p-6 text-right">
+                    <button onclick="deleteFromDb(${worker.id})" class="text-red-500/50 hover:text-red-500 text-sm font-bold">Delete</button>
+                </td>
+            `;
+            table.appendChild(tr);
+        });
+    }
+
+    // 2. SAVE TO MYSQL (FIXED IDs)
+    async function saveWorker() {
+        // Corrected IDs to match your HTML: addName and addDept
+        const nameInput = document.getElementById('addName');
+        const deptInput = document.getElementById('addDept');
+
+        const name = nameInput.value;
+        const dept = deptInput.value;
+
+        if (!name || !dept) return alert("Please fill fields");
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, dept })
+            });
+
+            if (response.ok) {
+                // Clear the inputs after success
+                nameInput.value = '';
+                toggleModal(false);
+                fetchWorkers(); // Refresh list
+            }
+        } catch (error) {
+            alert("Failed to save to database. Check if server.js is running.");
+        }
+    }
+
+    // 3. DELETE FROM MYSQL
+    async function deleteFromDb(id) {
+        if (confirm("Delete permanently from Database?")) {
+            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            fetchWorkers(); // Refresh list
+        }
+    }
+
+    // SEARCH FILTER
+    function filterWorkers() {
+        const query = document.getElementById('masterSearch').value.toLowerCase();
+        const rows = document.querySelectorAll('#workerRows tr');
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+        });
+    }
+
+    // Initial Load
+    fetchWorkers();
+</script>
+</body>
+</html>

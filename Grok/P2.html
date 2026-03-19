@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexive Reveal Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom utility for the 'hidden' state before animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        /* The 'active' state triggered by JS */
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white font-sans overflow-x-hidden">
+
+    <section class="h-screen flex flex-col justify-center items-center text-center p-6">
+        <h1 class="text-6xl md:text-8xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent mb-4">
+            Creative Developer
+        </h1>
+        <p class="text-slate-400 text-lg md:text-xl max-w-2xl">
+            I build digital experiences that move. Scroll down to see the magic happen.
+        </p>
+        <div class="mt-10 animate-bounce">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="id19 13l-7 7-7-7m14-8l-7 7-7-7"></path></svg>
+        </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-20">
+        <h2 class="reveal text-4xl font-bold mb-12 border-l-4 border-cyan-500 pl-4">Selected Works</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="reveal group relative overflow-hidden rounded-2xl bg-slate-800 h-80">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                <div class="absolute bottom-0 p-8 z-20 transition-transform duration-500 group-hover:-translate-y-2">
+                    <span class="text-cyan-400 text-sm font-mono tracking-widest">WEB DESIGN</span>
+                    <h3 class="text-2xl font-bold mt-2">Neon Genesis Interface</h3>
+                </div>
+            </div>
+
+            <div class="reveal group relative overflow-hidden rounded-2xl bg-slate-800 h-80" style="transition-delay: 200ms;">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                <div class="absolute bottom-0 p-8 z-20 transition-transform duration-500 group-hover:-translate-y-2">
+                    <span class="text-purple-400 text-sm font-mono tracking-widest">3D RENDERING</span>
+                    <h3 class="text-2xl font-bold mt-2">Abstract Voids</h3>
+                </div>
+            </div>
+
+            <div class="reveal group relative overflow-hidden rounded-2xl bg-slate-800 h-80">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                <div class="absolute bottom-0 p-8 z-20 transition-transform duration-500 group-hover:-translate-y-2">
+                    <span class="text-pink-400 text-sm font-mono tracking-widest">MOBILE APP</span>
+                    <h3 class="text-2xl font-bold mt-2">Pulse Health Tracker</h3>
+                </div>
+            </div>
+
+            <div class="reveal group relative overflow-hidden rounded-2xl bg-slate-800 h-80" style="transition-delay: 200ms;">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                <div class="absolute bottom-0 p-8 z-20 transition-transform duration-500 group-hover:-translate-y-2">
+                    <span class="text-emerald-400 text-sm font-mono tracking-widest">E-COMMERCE</span>
+                    <h3 class="text-2xl font-bold mt-2">Minimalist Storefront</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="reveal py-20 text-center border-t border-slate-800 mt-20">
+        <p class="text-slate-500 italic">"Design is not just what it looks like, but how it works."</p>
+    </footer>
+
+    <script>
+        // Intersection Observer Logic
+        const observerOptions = {
+            threshold: 0.15 // Trigger when 15% of the element is visible
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        // Select all elements with the 'reveal' class and observe them
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    </script>
+</body>
+</html>

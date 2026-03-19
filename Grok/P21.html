@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Digital Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&display=swap');
+        
+        body { 
+            background: #020202; 
+            color: #fff; 
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* The "God Ray" light effect */
+        .god-ray {
+            position: fixed;
+            top: 0; left: 50%;
+            width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+            transform: translateX(-50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+        }
+
+        /* Kinetic Text Shadow */
+        .hero-title {
+            font-size: 18vw;
+            line-height: 0.8;
+            letter-spacing: -0.05em;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="god-ray"></div>
+
+    <div class="fixed inset-0 flex items-center justify-center pointer-events-none">
+        <h1 id="bg-name" class="hero-title font-bold uppercase">SOPHEAK</h1>
+    </div>
+
+    <nav class="fixed top-0 w-full p-10 flex justify-between items-center z-50">
+        <div class="text-xl font-bold tracking-tighter">S.</div>
+        <div class="flex gap-8 text-[10px] font-bold uppercase tracking-[0.3em] opacity-40 hover:opacity-100 transition-opacity">
+            <a href="#">Work</a>
+            <a href="#">Studio</a>
+            <a href="#">Contact</a>
+        </div>
+    </nav>
+
+    <main class="relative z-10 pt-[40vh]">
+        
+        <section class="min-h-screen px-10 flex flex-col justify-start">
+            <div class="max-w-3xl">
+                <h2 class="text-4xl md:text-6xl font-light mb-10 leading-tight">
+                    Designing the <span class="font-bold text-sky-400">unseen</span> logic of the web.
+                </h2>
+                <div class="h-[1px] w-40 bg-sky-500 mb-10"></div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-10 p-10 max-w-7xl mx-auto pb-40">
+            
+            <div class="glass-card aspect-video rounded-3xl p-10 flex flex-col justify-between group">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-mono opacity-30">01 // VISUALS</span>
+                    <div class="w-2 h-2 rounded-full bg-sky-500 shadow-[0_0_15px_#0ea5e9]"></div>
+                </div>
+                <h3 class="text-3xl font-bold group-hover:text-sky-400 transition-colors">Aero-Logic Architecture</h3>
+            </div>
+
+            <div class="glass-card aspect-video rounded-3xl p-10 flex flex-col justify-between mt-20 group">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-mono opacity-30">02 // SYSTEMS</span>
+                    <div class="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_15px_#a855f7]"></div>
+                </div>
+                <h3 class="text-3xl font-bold group-hover:text-purple-400 transition-colors">Neural Design Core</h3>
+            </div>
+
+        </section>
+
+        <section class="h-screen flex flex-col items-center justify-center text-center">
+            <h2 class="text-7xl font-bold mb-10 tracking-tighter italic">Ready to start?</h2>
+            <div class="flex gap-4">
+                <button class="px-10 py-4 bg-sky-500 text-black font-bold rounded-full hover:bg-white transition-all">HIRE SOPHEAK</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const bgName = document.getElementById('bg-name');
+        
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            
+            // Background Name Parallax & Scale
+            bgName.style.transform = `scale(${1 + scrolled * 0.0005}) rotate(${scrolled * 0.01}deg)`;
+            bgName.style.opacity = 0.1 + (scrolled * 0.0001);
+            
+            // Stroke change based on scroll
+            const strokeColor = Math.min(1, scrolled / 1000);
+            bgName.style.webkitTextStroke = `1px rgba(255,255,255,${0.1 + strokeColor * 0.4})`;
+        });
+    </script>
+</body>
+</html>

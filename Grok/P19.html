@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Premium Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;800&display=swap');
+        
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* The background "Aura" */
+        .aura {
+            position: fixed;
+            top: 50%; left: 50%;
+            width: 80vw; height: 80vh;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.2) 0%, rgba(168, 85, 247, 0.1) 50%, transparent 100%);
+            transform: translate(-50%, -50%);
+            filter: blur(120px);
+            z-index: -1;
+        }
+
+        /* Glassmorphism card */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Kinetic Typography */
+        .big-name {
+            font-size: 20vw;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            background: linear-gradient(to bottom, #fff, #333);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0.1;
+        }
+    </style>
+</head>
+<body class="selection:bg-indigo-500">
+
+    <div class="aura" id="aura"></div>
+
+    <div class="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <h1 class="big-name" id="bg-text">SOPHEAK</h1>
+    </div>
+
+    <main class="relative z-10">
+        
+        <section class="h-screen flex flex-col items-center justify-center text-center p-6">
+            <h2 class="text-xs uppercase tracking-[1em] mb-4 text-indigo-400 font-bold">The Creative Vision of</h2>
+            <h1 class="text-7xl md:text-9xl font-extrabold tracking-tighter mb-6">SOPHEAK</h1>
+            <p class="max-w-xl text-zinc-400 text-lg md:text-xl font-light">
+                Specializing in <span class="text-white">high-performance interfaces</span> and interactive digital storytelling.
+            </p>
+        </section>
+
+        <section class="min-h-screen flex items-center justify-center p-6 md:p-20">
+            <div class="glass w-full max-w-5xl rounded-[3rem] p-10 md:p-20 flex flex-col md:flex-row items-center gap-12 group">
+                <div class="w-full md:w-1/2 aspect-video bg-zinc-800 rounded-3xl overflow-hidden relative">
+                    <div class="absolute inset-0 bg-indigo-600/20 group-hover:opacity-0 transition-opacity"></div>
+                    <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
+                </div>
+                <div class="w-full md:w-1/2">
+                    <span class="text-indigo-400 font-bold text-sm">PROJECT 01</span>
+                    <h3 class="text-4xl font-extrabold mt-2 mb-6">Neural Interface</h3>
+                    <p class="text-zinc-400 text-lg leading-relaxed mb-8">
+                        A seamless bridge between human intent and digital execution. Designed for speed, built for reliability.
+                    </p>
+                    <a href="#" class="px-8 py-3 bg-white text-black rounded-full font-bold hover:bg-indigo-400 transition-colors">View Case Study</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="h-screen flex items-center justify-center">
+            <h2 class="text-[12vw] font-black italic opacity-20 hover:opacity-100 transition-opacity cursor-default">INNOVATE</h2>
+        </section>
+
+    </main>
+
+    <script>
+        const aura = document.getElementById('aura');
+        const bgText = document.getElementById('bg-text');
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const val = scrolled * 0.1;
+
+            // 1. Zoom the background text as you scroll
+            bgText.style.transform = `scale(${1 + scrolled * 0.0005}) translateZ(0)`;
+            bgText.style.opacity = 0.1 + (scrolled * 0.0001);
+
+            // 2. Move the aura following the scroll
+            aura.style.transform = `translate(-50%, calc(-50% + ${scrolled * 0.2}px))`;
+        });
+
+        // Mouse Move Aura interaction
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 50;
+            const y = (e.clientY / window.innerHeight - 0.5) * 50;
+            aura.style.left = `calc(50% + ${x}px)`;
+            aura.style.top = `calc(50% + ${y}px)`;
+        });
+    </script>
+</body>
+</html>

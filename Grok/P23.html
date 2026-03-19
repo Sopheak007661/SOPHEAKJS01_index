@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Master Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@900&family=Inter:wght@300;600&display=swap');
+        
+        body { 
+            background: #050505; 
+            color: #fff; 
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .font-brand { font-family: 'Unbounded', sans-serif; }
+
+        /* The Animated Liquid Background */
+        .liquid-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(59, 130, 246, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            filter: blur(80px);
+        }
+
+        /* Perspective Container */
+        .viewport {
+            perspective: 1000px;
+            padding-bottom: 20vh;
+        }
+
+        /* Massive Floating Text */
+        .floating-name {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 25vw;
+            line-height: 0.8;
+            opacity: 0.05;
+            white-space: nowrap;
+            z-index: 0;
+            user-select: none;
+        }
+
+        /* Project Card with Glass & RGB Border */
+        .project-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-style: preserve-3d;
+        }
+
+        .project-card:hover {
+            transform: scale(1.02) rotateX(5deg) rotateY(-5deg);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="liquid-bg" id="cursor-glow"></div>
+    <div class="floating-name font-brand" id="bg-name">SOPHEAK</div>
+
+    <nav class="fixed top-0 w-full p-10 flex justify-between items-center z-50">
+        <div class="font-brand text-2xl tracking-tighter">S.</div>
+        <div class="flex gap-12 text-[10px] font-bold tracking-[0.4em] uppercase opacity-40">
+            <span>Engineering</span>
+            <span>Design</span>
+            <span>Motion</span>
+        </div>
+    </nav>
+
+    <div class="viewport">
+        <section class="h-screen flex items-center justify-center relative px-6">
+            <div class="text-center z-10">
+                <h1 class="text-xs font-bold tracking-[1.5em] uppercase text-blue-500 mb-6">Established 2026</h1>
+                <h2 class="text-5xl md:text-8xl font-brand leading-none uppercase tracking-tighter">
+                    Crafting <br> The Future.
+                </h2>
+            </div>
+        </section>
+
+        <section class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-24 px-10">
+            
+            <div class="project-card rounded-[3rem] p-12 aspect-[4/5] flex flex-col justify-between group reveal">
+                <div class="flex justify-between">
+                    <div class="h-2 w-12 bg-blue-500"></div>
+                    <span class="font-mono opacity-30">01</span>
+                </div>
+                <div>
+                    <h3 class="text-4xl font-brand uppercase mb-4">Aero Logic</h3>
+                    <p class="text-zinc-500 text-lg">Next-gen systems built for high-speed digital performance.</p>
+                </div>
+            </div>
+
+            <div class="project-card rounded-[3rem] p-12 aspect-[4/5] flex flex-col justify-between mt-40 group reveal">
+                <div class="flex justify-between">
+                    <div class="h-2 w-12 bg-purple-500"></div>
+                    <span class="font-mono opacity-30">02</span>
+                </div>
+                <div>
+                    <h3 class="text-4xl font-brand uppercase mb-4">Visual Core</h3>
+                    <p class="text-zinc-500 text-lg">Clean aesthetics paired with intuitive user behavior.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="h-screen flex flex-col items-center justify-center">
+            <h2 class="text-6xl md:text-9xl font-brand opacity-10 mb-20">SOPHEAK</h2>
+            <button class="px-16 py-6 border-2 border-white rounded-full font-brand text-sm hover:bg-white hover:text-black transition-all duration-500">
+                INITIATE PROJECT
+            </button>
+        </section>
+    </div>
+
+    <script>
+        const glow = document.getElementById('cursor-glow');
+        const bgName = document.getElementById('bg-name');
+        const reveals = document.querySelectorAll('.reveal');
+
+        // 1. Cursor Glow Follow
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            glow.style.setProperty('--x', `${x}%`);
+            glow.style.setProperty('--y', `${y}%`);
+        });
+
+        // 2. Scroll-Linked Animations
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            
+            // Background Name Scale & Opacity
+            const scale = 1 + (scrolled * 0.0002);
+            const opacity = 0.05 + (scrolled * 0.0001);
+            bgName.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            bgName.style.opacity = opacity;
+
+            // Reveal Animation on Scroll
+            reveals.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.8) {
+                    card.style.opacity = "1";
+                    card.style.transform = "translateY(0) rotateX(0)";
+                } else {
+                    card.style.opacity = "0";
+                    card.style.transform = "translateY(100px) rotateX(10deg)";
+                }
+            });
+        });
+
+        // Initialize Reveal States
+        reveals.forEach(card => {
+            card.style.opacity = "0";
+            card.style.transform = "translateY(100px) rotateX(10deg)";
+        });
+    </script>
+</body>
+</html>

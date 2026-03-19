@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquid Warp Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gooey-container {
+            filter: url('#gooey');
+        }
+        .liquid-card {
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        /* Hide scrollbar but keep functionality */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen flex items-center overflow-hidden">
+
+    <svg class="hidden">
+        <defs>
+            <filter id="gooey">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="goo" />
+                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+            </filter>
+        </defs>
+    </svg>
+
+    <div class="w-full relative">
+        <div class="px-20 mb-8">
+            <h2 class="text-5xl font-black italic tracking-tighter uppercase">Fluid / Motion</h2>
+        </div>
+
+        <div id="slider" class="gooey-container flex gap-8 overflow-x-auto px-20 py-10 no-scrollbar cursor-grab active:cursor-grabbing">
+            <div class="liquid-card flex-shrink-0 w-80 h-[450px] bg-blue-600 rounded-[60px] p-8 flex flex-col justify-end group hover:scale-105">
+                <h3 class="text-3xl font-bold leading-none">AQUATIC<br>VIBES</h3>
+                <p class="mt-4 text-sm opacity-0 group-hover:opacity-100 transition-opacity">01 — Exploration</p>
+            </div>
+            <div class="liquid-card flex-shrink-0 w-80 h-[450px] bg-rose-500 rounded-[60px] p-8 flex flex-col justify-end group hover:scale-105">
+                <h3 class="text-3xl font-bold leading-none">CRIMSON<br>FLOW</h3>
+                <p class="mt-4 text-sm opacity-0 group-hover:opacity-100 transition-opacity">02 — Passion</p>
+            </div>
+            <div class="liquid-card flex-shrink-0 w-80 h-[450px] bg-amber-400 rounded-[60px] p-8 flex flex-col justify-end group hover:scale-105 text-black">
+                <h3 class="text-3xl font-bold leading-none">SOLAR<br>FLARE</h3>
+                <p class="mt-4 text-sm opacity-0 group-hover:opacity-100 transition-opacity">03 — Energy</p>
+            </div>
+             <div class="liquid-card flex-shrink-0 w-80 h-[450px] bg-emerald-500 rounded-[60px] p-8 flex flex-col justify-end group hover:scale-105">
+                <h3 class="text-3xl font-bold leading-none">JUNGLE<br>DEEP</h3>
+                <p class="mt-4 text-sm opacity-0 group-hover:opacity-100 transition-opacity">04 — Nature</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slider = document.getElementById('slider');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+
+        slider.addEventListener('mouseleave', () => isDown = false);
+        slider.addEventListener('mouseup', () => isDown = false);
+
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; // Scroll speed
+            slider.scrollLeft = scrollLeft - walk;
+
+            // Reflexive touch: Tilt cards while dragging
+            const cards = document.querySelectorAll('.liquid-card');
+            cards.forEach(card => {
+                const skew = walk / 20;
+                card.style.transform = `skewX(${skew}deg) scale(0.95)`;
+            });
+        });
+
+        document.addEventListener('mouseup', () => {
+            document.querySelectorAll('.liquid-card').forEach(card => {
+                card.style.transform = `skewX(0deg) scale(1)`;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Warp Interface</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@900&display=swap');
+        
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Unbounded', sans-serif;
+            overflow-x: hidden;
+            perspective: 1500px; /* Crucial for 3D depth */
+        }
+
+        .three-d-scene {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* The 'Shatter' effect for text */
+        .shatter-text span {
+            display: inline-block;
+            transition: all 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            transform-style: preserve-3d;
+        }
+
+        .scroll-trigger {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+        }
+
+        /* Glowing grid background */
+        .grid-bg {
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: rotateX(60deg) translateZ(-200px);
+            position: fixed;
+            inset: -100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-500">
+
+    <div class="grid-bg"></div>
+
+    <div class="three-d-scene" id="world">
+        <section class="scroll-trigger">
+            <h1 class="shatter-text text-[15vw] tracking-tighter uppercase leading-none text-center">
+                Portal
+            </h1>
+        </section>
+
+        <section class="scroll-trigger">
+            <div class="relative w-[400px] h-[600px] group">
+                <div class="absolute inset-0 bg-cyan-500/20 blur-3xl group-hover:bg-cyan-500/40 transition-all"></div>
+                <div class="glass border border-white/20 bg-white/5 backdrop-blur-md rounded-3xl w-full h-full p-10 flex flex-col justify-end transform transition-transform duration-700 hover:translate-z-20">
+                    <h2 class="text-4xl font-bold mb-4">Deep Core</h2>
+                    <p class="opacity-50 text-sm tracking-widest uppercase">Sub-Level 01</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="scroll-trigger">
+            <h1 class="shatter-text text-[15vw] text-outline italic opacity-50">
+                CYBER
+            </h1>
+        </section>
+    </div>
+
+    <script>
+        // Wrap every letter in a span for the 'shatter' effect
+        document.querySelectorAll('.shatter-text').forEach(el => {
+            const letters = el.textContent.trim().split("");
+            el.innerHTML = letters.map(l => `<span>${l}</span>`).join("");
+        });
+
+        const world = document.getElementById('world');
+        const letters = document.querySelectorAll('.shatter-text span');
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const viewportHeight = window.innerHeight;
+
+            // 1. Moving the "Camera" through 3D space
+            // This makes the world pull toward you as you scroll down
+            world.style.transform = `translateZ(${scrolled * 0.5}px) rotateY(${scrolled * 0.01}deg)`;
+
+            // 2. Letter 'Shatter' Logic
+            letters.forEach((span, i) => {
+                const rect = span.getBoundingClientRect();
+                const centerDist = rect.top - (viewportHeight / 2);
+                
+                // If the letter is near the center, it's normal. 
+                // If it's far, it "explodes" in 3D space.
+                const intensity = Math.abs(centerDist) / 5;
+                const rotateX = centerDist / 10;
+                const translateZ = intensity * 2;
+
+                span.style.transform = `
+                    translateZ(${translateZ}px) 
+                    rotateX(${rotateX}deg) 
+                    rotateY(${centerDist / 20}deg)
+                    opacity: ${1 - (intensity / 100)}
+                `;
+            });
+        });
+
+        // Mouse interaction for subtle 3D tilt
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.clientX) / 50;
+            const y = (window.innerHeight / 2 - e.clientY) / 50;
+            world.style.transform += ` rotateY(${-x}deg) rotateX(${y}deg)`;
+        });
+    </script>
+</body>
+</html>

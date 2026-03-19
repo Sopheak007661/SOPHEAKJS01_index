@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bento-card {
+            transition: transform 0.1s ease-out, box-shadow 0.2s ease;
+            transform-style: preserve-3d;
+        }
+    </style>
+</head>
+<body class="bg-black text-white p-10 min-h-screen flex items-center justify-center">
+    <div class="grid grid-cols-4 grid-rows-2 gap-4 max-w-5xl w-full h-[500px]">
+        <div class="bento-card col-span-2 row-span-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-8 relative overflow-hidden group">
+            <h2 class="text-3xl font-bold">Main Analytics</h2>
+            <div class="absolute bottom-4 right-4 bg-white/20 p-4 rounded-full blur-2xl group-hover:blur-xl transition-all"></div>
+        </div>
+        
+        <div class="bento-card col-span-2 bg-zinc-900 border border-zinc-800 rounded-3xl p-6 hover:border-zinc-400">
+            <p class="text-zinc-500">Active Users</p>
+            <h3 class="text-4xl font-mono mt-2">12,402</h3>
+        </div>
+        
+        <div class="bento-card bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+             <div class="h-full w-full bg-emerald-500/10 rounded-xl animate-pulse"></div>
+        </div>
+        
+        <div class="bento-card bg-zinc-900 border border-zinc-800 rounded-3xl p-6 flex items-center justify-center">
+            <button class="bg-white text-black px-6 py-2 rounded-full font-bold active:scale-95 transition-transform">Push</button>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.bento-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const xc = rect.width / 2;
+                const yc = rect.height / 2;
+                
+                const dx = x - xc;
+                const dy = y - yc;
+                
+                card.style.transform = `rotateY(${dx / 20}deg) rotateX(${-dy / 20}deg)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+            });
+        });
+    </script>
+</body>
+</html>

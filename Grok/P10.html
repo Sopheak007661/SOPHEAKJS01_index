@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep-Space Kinetic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@900&display=swap');
+        
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Unbounded', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* The Distortion Cursor */
+        #lens {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 100;
+            backdrop-filter: contrast(2) brightness(1.5) saturate(2) hue-rotate(90deg);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.1s ease-out;
+            box-shadow: 0 0 50px rgba(139, 92, 246, 0.3);
+        }
+
+        .section-container {
+            display: flex;
+            width: 500vw; /* 5 times the screen width for long horizontal scroll */
+            height: 100vh;
+        }
+
+        .panel {
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .parallax-text {
+            will-change: transform;
+            transition: transform 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lens"></div>
+
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-900/30 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/30 rounded-full blur-[120px]"></div>
+    </div>
+
+    <div class="section-container" id="main-scroll">
+        
+        <section class="panel">
+            <h1 class="parallax-text text-[15vw] tracking-tighter uppercase" data-speed="0.5">
+                Beyond
+            </h1>
+        </section>
+
+        <section class="panel">
+            <div class="parallax-text flex gap-10" data-speed="1.2">
+                <div class="w-80 h-[500px] bg-gradient-to-b from-fuchsia-600 to-purple-900 rounded-full"></div>
+                <div class="w-80 h-[500px] bg-gradient-to-b from-blue-600 to-indigo-900 rounded-full mt-20"></div>
+                <div class="w-80 h-[500px] bg-gradient-to-b from-cyan-600 to-teal-900 rounded-full"></div>
+            </div>
+            <h2 class="absolute text-7xl font-bold opacity-20">STRUCTURE</h2>
+        </section>
+
+        <section class="panel">
+            <h1 class="parallax-text text-[12vw] italic text-transparent border-2 border-white/20 bg-clip-text bg-gradient-to-r from-white to-zinc-800" data-speed="0.8">
+                DYNAMICS
+            </h1>
+        </section>
+
+        <section class="panel">
+            <div class="grid grid-cols-2 gap-4 parallax-text" data-speed="1.5">
+                <div class="w-64 h-64 glass rounded-3xl bg-white/5 border border-white/10"></div>
+                <div class="w-64 h-64 glass rounded-3xl bg-white/5 border border-white/10"></div>
+                <div class="w-64 h-64 glass rounded-3xl bg-white/5 border border-white/10"></div>
+                <div class="w-64 h-64 glass rounded-3xl bg-white/5 border border-white/10"></div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h1 class="text-6xl text-center">EVOLUTION<br><span class="text-lg tracking-[1em] text-zinc-500">COMPLETE</span></h1>
+        </section>
+    </div>
+
+    <script>
+        const lens = document.getElementById('lens');
+        const container = document.getElementById('main-scroll');
+        const layers = document.querySelectorAll('.parallax-text');
+
+        // 1. Distortion Cursor Follow
+        document.addEventListener('mousemove', (e) => {
+            lens.style.transform = `translate(${e.clientX - 75}px, ${e.clientY - 75}px)`;
+        });
+
+        // 2. Virtual Horizontal Scroll
+        // This makes the vertical mouse wheel move the page horizontally
+        window.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            container.style.transform = `translateX(-${window.scrollY}px)`;
+            
+            // Adjust body height to allow for vertical scrolling space
+            document.body.style.height = (container.offsetWidth - window.innerWidth + window.innerHeight) + 'px';
+            
+            // 3. Kinetic Parallax Logic
+            layers.forEach(layer => {
+                const speed = layer.getAttribute('data-speed');
+                const x = (window.scrollY * speed) * 0.2;
+                layer.style.transform = `translateX(${-x}px)`;
+            });
+        }, { passive: false });
+
+        // Initialize body height
+        document.body.style.height = (container.offsetWidth - window.innerWidth + window.innerHeight) + 'px';
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Bento Morph</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;900&display=swap');
+        
+        body { background: #0a0a0a; color: #fff; font-family: 'Outfit', sans-serif; }
+
+        .bento-container {
+            display: grid;
+            grid-template-cols: repeat(4, 1fr);
+            grid-template-rows: repeat(6, 200px);
+            gap: 1.5rem;
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* The 'Sticky' trick: Each card has a different top offset */
+        .sticky-card {
+            position: sticky;
+            transition: all 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            will-change: transform, filter;
+        }
+
+        .gradient-1 { background: linear-gradient(135deg, #6366f1, #a855f7); }
+        .gradient-2 { background: linear-gradient(135deg, #3b82f6, #2dd4bf); }
+        .gradient-3 { background: linear-gradient(135deg, #f43f5e, #fb923c); }
+    </style>
+</head>
+<body>
+
+    <header class="h-screen flex flex-col items-center justify-center text-center">
+        <h1 class="text-[10vw] font-black italic tracking-tighter leading-none mb-6">MORPH</h1>
+        <p class="text-zinc-500 uppercase tracking-[1em] animate-bounce">Scroll Down</p>
+    </header>
+
+    <main class="bento-container">
+        <div class="sticky-card col-span-2 row-span-2 rounded-[3rem] gradient-1 p-10 top-20 shadow-2xl">
+            <h2 class="text-4xl font-black">THE CORE</h2>
+            <div class="mt-4 w-12 h-1 bg-white/30"></div>
+        </div>
+
+        <div class="sticky-card col-span-2 bg-zinc-900 border border-white/10 rounded-[2.5rem] p-8 top-40">
+            <p class="text-zinc-400 font-mono text-xs uppercase">Process 01</p>
+            <h3 class="text-2xl font-bold mt-2">Kinetic Assembly</h3>
+        </div>
+
+        <div class="sticky-card col-span-1 bg-zinc-800 rounded-[2.5rem] top-60 overflow-hidden">
+             <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover opacity-50">
+        </div>
+
+        <div class="sticky-card col-span-1 row-span-3 gradient-2 rounded-[3rem] top-[400px] flex items-center justify-center">
+            <span class="rotate-90 text-4xl font-black opacity-20">STRUCTURE</span>
+        </div>
+
+        <div class="sticky-card col-span-2 row-span-2 bg-zinc-900 border border-white/10 rounded-[3rem] p-10 top-80">
+            <h3 class="text-3xl font-bold">Reflexive Motion</h3>
+            <p class="mt-4 text-zinc-500">Every tile reacts to the scroll depth independently, creating a layered 'parallax' effect without complex libraries.</p>
+        </div>
+
+        <div class="sticky-card col-span-1 gradient-3 rounded-[2.5rem] top-[500px]"></div>
+    </main>
+
+    <div class="h-screen"></div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const cards = document.querySelectorAll('.sticky-card');
+            const scrolled = window.scrollY;
+
+            cards.forEach((card, index) => {
+                const rect = card.getBoundingClientRect();
+                const centerOffset = window.innerHeight / 2 - rect.top;
+                
+                // If the card is near its 'sticky' position, make it scale up
+                if (rect.top <= 200 + (index * 20)) {
+                    card.style.transform = `scale(0.95) rotateX(${centerOffset / 50}deg)`;
+                    card.style.filter = `brightness(0.7)`;
+                } else {
+                    card.style.transform = `scale(1) rotateX(0deg)`;
+                    card.style.filter = `brightness(1)`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

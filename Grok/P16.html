@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Design Engineering</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;800&display=swap');
+        
+        body { 
+            background-color: #000; 
+            color: #fff; 
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Popular "Spotlight" Border Effect */
+        .spotlight-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .spotlight-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(600px circle at var(--x) var(--y), rgba(255,255,255,0.06), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .spotlight-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Smooth revealing text */
+        .reveal-text {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+            transform: translateY(100%);
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .is-visible .reveal-text {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="selection:bg-indigo-500">
+
+    <nav class="fixed top-0 w-full p-6 flex justify-between items-center z-50 backdrop-blur-sm border-b border-white/5">
+        <div class="font-bold text-lg tracking-tighter">SOPHEAK</div>
+        <div class="flex gap-8 text-sm text-zinc-400">
+            <a href="#" class="hover:text-white transition-colors">Work</a>
+            <a href="#" class="hover:text-white transition-colors">Stack</a>
+            <a href="#" class="bg-white text-black px-4 py-1.5 rounded-full font-medium hover:bg-zinc-200 transition-colors">Hire</a>
+        </div>
+    </nav>
+
+    <main class="pt-40 px-6">
+        <section class="max-w-6xl mx-auto mb-32 section-trigger">
+            <div class="overflow-hidden">
+                <h1 class="reveal-text text-6xl md:text-8xl font-extrabold tracking-tight mb-8">
+                    Crafting digital <br><span class="text-zinc-500">interfaces that feel.</span>
+                </h1>
+            </div>
+            <p class="reveal-text text-zinc-400 text-xl max-w-2xl delay-100">
+                SOPHEAK is a multidisciplinary designer and engineer specializing in building polished, functional, and reflexive digital products.
+            </p>
+        </section>
+
+        <section class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 pb-40">
+            
+            <div class="spotlight-card md:col-span-8 h-[400px] rounded-3xl p-10 flex flex-col justify-end group">
+                <div class="w-12 h-12 bg-indigo-500 rounded-xl mb-6 flex items-center justify-center group-hover:rotate-12 transition-transform">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h3 class="text-3xl font-bold mb-2">High Velocity Systems</h3>
+                <p class="text-zinc-500">Optimizing performance for the modern web.</p>
+            </div>
+
+            <div class="spotlight-card md:col-span-4 h-[400px] rounded-3xl p-10 flex flex-col justify-between">
+                <div class="text-zinc-600 font-mono text-xs">STATUS: AVAILABLE</div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-2">Reflexive UI</h3>
+                    <p class="text-zinc-500 text-sm">Components that react to user intent instantly.</p>
+                </div>
+            </div>
+
+            <div class="spotlight-card md:col-span-12 h-[200px] rounded-3xl flex items-center justify-center">
+                <h2 class="text-white/10 text-8xl font-black tracking-[1em] select-none">SOPHEAK</h2>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // 1. Mouse Spotlight Interaction
+        const cards = document.querySelectorAll('.spotlight-card');
+        window.addEventListener('mousemove', (e) => {
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--x', `${x}px`);
+                card.style.setProperty('--y', `${y}px`);
+            });
+        });
+
+        // 2. Intersection Observer for popular "Reveal" effect
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section-trigger').forEach(s => observer.observe(s));
+    </script>
+</body>
+</html>

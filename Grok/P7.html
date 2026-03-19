@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spatial Fluid Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --x: 0px; --y: 0px; }
+        body { background: #000; overflow-x: hidden; font-family: 'Inter', sans-serif; cursor: none; }
+        
+        /* The custom "Aura" cursor */
+        #aura {
+            position: fixed;
+            top: 0; left: 0;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
+            transform: translate(calc(var(--x) - 200px), calc(var(--y) - 200px));
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Physics Card */
+        .card {
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <div id="aura"></div>
+
+    <div id="dot" class="fixed w-2 h-2 bg-white rounded-full z-[100] pointer-events-none transition-transform duration-75"></div>
+
+    <nav class="fixed top-0 w-full p-10 flex justify-between z-50 mix-blend-difference">
+        <span class="font-black tracking-tighter text-2xl">FLUID.SYS</span>
+        <div class="flex gap-10 text-[10px] tracking-[0.4em] uppercase">
+            <a href="#" class="hover:line-through">Archive</a>
+            <a href="#" class="hover:line-through">Index</a>
+        </div>
+    </nav>
+
+    <main class="relative z-10 flex flex-col items-center pt-40 pb-20">
+        
+        <div class="mb-40 text-center">
+            <h1 class="text-[15vw] font-black leading-none tracking-tighter uppercase italic text-outline hover:text-white transition-colors duration-700">
+                Kinetic
+            </h1>
+            <p class="text-zinc-500 tracking-widest text-sm">— Interaction Design 2026 —</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 px-10 max-w-7xl">
+            
+            <div class="card bg-zinc-900 aspect-[3/4] rounded-3xl overflow-hidden relative group">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000">
+                <div class="absolute inset-0 bg-black/40 p-8 flex flex-col justify-end">
+                    <h2 class="text-2xl font-bold">Project Alpha</h2>
+                </div>
+            </div>
+
+            <div class="card bg-zinc-900 aspect-[3/4] rounded-3xl overflow-hidden relative mt-20 group">
+                <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000">
+                <div class="absolute inset-0 bg-black/40 p-8 flex flex-col justify-end">
+                    <h2 class="text-2xl font-bold">Digital Void</h2>
+                </div>
+            </div>
+
+            <div class="card bg-zinc-900 aspect-[3/4] rounded-3xl overflow-hidden relative group">
+                <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000">
+                <div class="absolute inset-0 bg-black/40 p-8 flex flex-col justify-end">
+                    <h2 class="text-2xl font-bold">Neural Net</h2>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const cards = document.querySelectorAll('.card');
+        const aura = document.documentElement;
+        const dot = document.getElementById('dot');
+
+        // Mouse Tracker
+        document.addEventListener('mousemove', (e) => {
+            // Update CSS variables for the aura
+            aura.style.setProperty('--x', e.clientX + 'px');
+            aura.style.setProperty('--y', e.clientY + 'px');
+            
+            // Move small dot
+            dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+
+            // Physics Calculation for each card
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardCenterX = rect.left + rect.width / 2;
+                const cardCenterY = rect.top + rect.height / 2;
+
+                // Calculate distance from mouse to card center
+                const distanceX = e.clientX - cardCenterX;
+                const distanceY = e.clientY - cardCenterY;
+                const distance = Math.sqrt(distanceX**2 + distanceY**2);
+
+                // If mouse is within 400px, push the card away slightly
+                if (distance < 400) {
+                    const force = (400 - distance) / 20; // Strength of push
+                    const angle = Math.atan2(distanceY, distanceX);
+                    const moveX = Math.cos(angle) * -force;
+                    const moveY = Math.sin(angle) * -force;
+                    
+                    card.style.transform = `translate3d(${moveX}px, ${moveY}px, 0) scale(1.02)`;
+                } else {
+                    card.style.transform = `translate3d(0, 0, 0) scale(1)`;
+                }
+            });
+        });
+
+        // Scroll Warp Effect
+        let lastScroll = window.pageYOffset;
+        function animate() {
+            const currentScroll = window.pageYOffset;
+            const diff = currentScroll - lastScroll;
+            const skew = diff * 0.1; // Warp intensity
+            
+            document.querySelector('main').style.transform = `skewY(${skew}deg)`;
+            
+            lastScroll = currentScroll;
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

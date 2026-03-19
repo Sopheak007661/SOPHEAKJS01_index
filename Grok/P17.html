@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Digital Architect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&display=swap');
+        
+        body { 
+            background-color: #020617; 
+            color: #f8fafc; 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* The Aurora Background */
+        .aurora {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
+            z-index: -1;
+            filter: blur(100px);
+        }
+
+        /* Magnetic Glass Effect */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.2s cubic-bezier(0.33, 1, 0.68, 1), border-color 0.3s;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Sophisticated Text Reveal */
+        .split-line {
+            overflow: hidden;
+            display: block;
+        }
+        .split-line span {
+            display: block;
+            transform: translateY(100%);
+            animation: reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes reveal {
+            to { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aurora" id="aurora"></div>
+
+    <nav class="fixed top-0 w-full p-8 flex justify-between items-center z-50">
+        <div class="text-xl font-extrabold tracking-tighter">SOPHEAK</div>
+        <div class="hidden md:flex items-center gap-10 text-sm font-medium text-slate-400">
+            <a href="#work" class="hover:text-white transition-colors">Experience</a>
+            <a href="#about" class="hover:text-white transition-colors">Methods</a>
+            <a href="#" class="px-6 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20">Resume</a>
+        </div>
+    </nav>
+
+    <main class="relative pt-48 pb-20 px-6 max-w-7xl mx-auto">
+        
+        <header class="mb-32">
+            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight mb-8">
+                <span class="split-line"><span>Designing for</span></span>
+                <span class="split-line"><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Human Intuition.</span></span>
+            </h1>
+            <p class="text-xl text-slate-400 max-w-xl leading-relaxed">
+                Focused on building scalable interfaces and reflexive systems that define the future of the web.
+            </p>
+        </header>
+
+        <section id="work" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div class="glass-panel col-span-1 md:col-span-2 rounded-[2.5rem] p-12 h-[500px] flex flex-col justify-between group">
+                <div class="flex justify-between items-start">
+                    <div class="w-14 h-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center border border-indigo-500/20">
+                        <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    </div>
+                    <span class="text-xs font-mono text-slate-500">2026 EDITION</span>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold mb-4">Engineering Precision</h2>
+                    <p class="text-slate-400 text-lg">Clean code meets world-class aesthetics. Every pixel has a purpose.</p>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-[2.5rem] p-10 h-[500px] flex flex-col items-center justify-center text-center group">
+                <div class="mb-8 relative">
+                    <div class="w-32 h-32 bg-purple-500/20 rounded-full blur-2xl group-hover:bg-purple-500/40 transition-all"></div>
+                    <div class="absolute inset-0 flex items-center justify-center text-5xl">⚡</div>
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Reflexive Motion</h3>
+                <p class="text-sm text-slate-500 italic">Interactions that anticipate the user.</p>
+            </div>
+
+            <div class="glass-panel col-span-1 md:col-span-3 rounded-[2.5rem] p-16 flex flex-col md:flex-row items-center justify-between gap-10">
+                <h2 class="text-4xl font-bold">Let's build the <br>next generation.</h2>
+                <div class="flex gap-4">
+                    <div class="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 cursor-pointer">𝕏</div>
+                    <div class="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 cursor-pointer">in</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const aurora = document.getElementById('aurora');
+        const panels = document.querySelectorAll('.glass-panel');
+
+        // 1. Dynamic Background Aurora Follow
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            
+            aurora.style.setProperty('--x', `${x}%`);
+            aurora.style.setProperty('--y', `${y}%`);
+
+            // 2. Subtle Magnetic Panel Effect
+            panels.forEach(panel => {
+                const rect = panel.getBoundingClientRect();
+                const panelX = rect.left + rect.width / 2;
+                const panelY = rect.top + rect.height / 2;
+
+                const distX = (e.clientX - panelX) / 40;
+                const distY = (e.clientY - panelY) / 40;
+
+                panel.style.transform = `translate3d(${distX}px, ${distY}px, 0)`;
+            });
+        });
+
+        // Reset panels when mouse leaves
+        document.addEventListener('mouseleave', () => {
+            panels.forEach(panel => panel.style.transform = `translate3d(0,0,0)`);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FACTORY OS — SOPHEAK</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0a0a0c;
+    --surface: #111114;
+    --border:  #1e1e24;
+    --border2: #2a2a34;
+    --amber:   #f59e0b;
+    --cyan:    #22d3ee;
+    --red:     #f43f5e;
+    --green:   #10b981;
+    --muted:   #52525b;
+    --text:    #e4e4e7;
+    --dim:     #71717a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+    );
+  }
+  /* NAV RAIL */
+  .nav-rail {
+    width: 64px; min-height: 100vh;
+    background: var(--surface); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 20px 0; gap: 6px; position: sticky; top: 0; height: 100vh; flex-shrink: 0;
+  }
+  .nav-logo {
+    width: 36px; height: 36px; background: var(--amber); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px;
+    color: #000; margin-bottom: 20px;
+  }
+  .nav-btn {
+    width: 44px; height: 44px; border-radius: 10px;
+    border: none; background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; transition: background 0.2s; position: relative;
+  }
+  .nav-btn:hover { background: var(--border); }
+  .nav-btn.active { background: rgba(245,158,11,0.15); }
+  .nav-btn.active::before {
+    content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 24px; background: var(--amber); border-radius: 0 2px 2px 0;
+  }
+  .nav-spacer { flex: 1; }
+  /* MAIN */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  /* TOPBAR */
+  .topbar {
+    height: 60px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 28px; gap: 16px;
+    background: var(--surface); flex-shrink: 0;
+  }
+  .topbar-title {
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--amber);
+  }
+  .topbar-sep { width: 1px; height: 20px; background: var(--border); }
+  .topbar-page { font-size: 11px; color: var(--dim); letter-spacing: 0.1em; }
+  .topbar-spacer { flex: 1; }
+  .topbar-clock { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; }
+  .btn {
+    display: inline-flex; align-items: center;
+    padding: 8px 16px; border-radius: 8px; border: none;
+    font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.05em;
+  }
+  .btn-amber { background: var(--amber); color: #000; }
+  .btn-amber:hover { background: #fbbf24; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--dim); }
+  .btn-ghost:hover { color: var(--text); background: var(--border); }
+  /* CONTENT */
+  .content { flex: 1; overflow-y: auto; padding: 28px; }
+  /* KPI STRIP */
+  .kpi-strip {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 1px; background: var(--border); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; margin-bottom: 24px;
+  }
+  .kpi-cell {
+    background: var(--surface); padding: 16px 20px;
+    display: flex; flex-direction: column; gap: 4px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .kpi-cell:nth-child(1){animation-delay:.05s}
+  .kpi-cell:nth-child(2){animation-delay:.10s}
+  .kpi-cell:nth-child(3){animation-delay:.15s}
+  .kpi-cell:nth-child(4){animation-delay:.20s}
+  .kpi-cell:nth-child(5){animation-delay:.25s}
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+  .kpi-label { font-size: 9px; color: var(--dim); letter-spacing: 0.12em; text-transform: uppercase; }
+  .kpi-value { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; }
+  .kpi-delta { font-size: 9px; }
+  /* GRID */
+  .grid-3  { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3b { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  /* CARD */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .card-title { font-size: 9px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--dim); }
+  .card-badge { font-size: 9px; padding: 3px 8px; border-radius: 4px; background: var(--border); color: var(--dim); }
+  /* STATUS BADGE */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 9px; font-weight: 500; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 4px;
+  }
+  .badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+  .badge-active { background:rgba(16,185,129,.1);  color:var(--green); border:1px solid rgba(16,185,129,.2); }
+  .badge-break  { background:rgba(245,158,11,.1);  color:var(--amber); border:1px solid rgba(245,158,11,.2); }
+  .badge-off    { background:rgba(82,82,91,.2);    color:var(--muted); border:1px solid rgba(82,82,91,.3);   }
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--dim); padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border);
+  }
+  .data-table td { padding: 13px 14px; font-size: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.012); }
+  .action-btn {
+    background: none; border: 1px solid var(--border2); color: var(--dim);
+    border-radius: 6px; padding: 4px 10px;
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    cursor: pointer; transition: all 0.15s; margin-left: 4px;
+  }
+  .action-btn:hover        { color: var(--text); border-color: var(--muted); }
+  .action-btn.danger:hover { color: var(--red);  border-color: var(--red); }
+  .action-btn.cycle:hover  { color: var(--cyan); border-color: var(--cyan); }
+  .action-btn.edit:hover   { color: var(--amber);border-color: var(--amber); }
+  /* DEPT CARD */
+  .dept-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .dept-card-name  { font-size: 10px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; }
+  .dept-card-count { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; }
+  /* SEARCH */
+  .search-wrap { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
+  .search-input {
+    flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 16px; font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--text); outline: none; transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--border2); }
+  .search-input::placeholder { color: var(--muted); }
+  .filter-tab {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 14px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--dim);
+    cursor: pointer; transition: all 0.15s; letter-spacing: 0.06em; white-space: nowrap;
+  }
+  .filter-tab:hover { color: var(--text); border-color: var(--border2); }
+  .filter-tab.active { color: var(--amber); border-color: rgba(245,158,11,.4); background: rgba(245,158,11,.06); }
+  /* PROGRESS */
+  .prog-bar  { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+    z-index: 1000; display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-box {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 16px; padding: 32px; width: 100%; max-width: 420px;
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn { from{opacity:0;transform:scale(.97) translateY(8px)} to{opacity:1;transform:none} }
+  .modal-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 24px; }
+  .field-label { font-size: 9px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .field-input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 11px 14px;
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text);
+    outline: none; margin-bottom: 16px; transition: border-color 0.2s;
+  }
+  .field-input:focus { border-color: var(--amber); }
+  .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
+  .modal-actions .btn { flex: 1; justify-content: center; padding: 12px; }
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed; right: 0; top: 0; height: 100vh; width: 300px;
+    background: var(--surface); border-left: 1px solid var(--border);
+    z-index: 500; transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto; padding: 24px;
+  }
+  .sidebar.open { transform: none; }
+  .log-item { display: flex; gap: 12px; margin-bottom: 18px; }
+  .log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .log-time { font-size: 9px; color: var(--muted); margin-bottom: 2px; }
+  .log-text { font-size: 11px; color: var(--dim); }
+  canvas { max-height: 200px; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+  .empty-state { padding: 48px; text-align: center; color: var(--muted); font-size: 11px; }
+  .c-green { color: var(--green); } .c-amber { color: var(--amber); }
+  .c-cyan  { color: var(--cyan);  } .c-muted { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- NAV RAIL -->
+<nav class="nav-rail">
+  <div class="nav-logo">F</div>
+  <button class="nav-btn active" title="Dashboard">⬛</button>
+  <button class="nav-btn" onclick="toggleSidebar()" title="Logs">📋</button>
+  <div class="nav-spacer"></div>
+  <button class="nav-btn" title="Operator">👤</button>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <span class="topbar-title">Factory OS</span>
+    <div class="topbar-sep"></div>
+    <span class="topbar-page">Command Dashboard</span>
+    <div class="topbar-sep"></div>
+    <span class="topbar-page" style="color:#52525b">Operator: <span style="color:#a1a1aa">SOPHEAK</span></span>
+    <div class="topbar-spacer"></div>
+    <span class="topbar-clock" id="liveClock"></span>
+    <div class="topbar-sep"></div>
+    <button class="btn btn-ghost" onclick="toggleSidebar()" style="margin-right:8px">Shift Logs</button>
+    <button class="btn btn-amber" onclick="openModal('addModal')">+ Register</button>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- KPI STRIP -->
+    <div class="kpi-strip">
+      <div class="kpi-cell">
+        <span class="kpi-label">Total Workers</span>
+        <span class="kpi-value" id="kpiTotal">—</span>
+        <span class="kpi-delta" style="color:var(--dim)" id="kpiTotalSub">loading...</span>
+      </div>
+      <div class="kpi-cell">
+        <span class="kpi-label">Active Now</span>
+        <span class="kpi-value c-green" id="kpiActive">—</span>
+        <span class="kpi-delta c-green">● Online</span>
+      </div>
+      <div class="kpi-cell">
+        <span class="kpi-label">On Break</span>
+        <span class="kpi-value c-amber" id="kpiBreak">—</span>
+        <span class="kpi-delta c-amber">⏸ Paused</span>
+      </div>
+      <div class="kpi-cell">
+        <span class="kpi-label">Off Duty</span>
+        <span class="kpi-value c-muted" id="kpiOff">—</span>
+        <span class="kpi-delta c-muted">◌ Offline</span>
+      </div>
+      <div class="kpi-cell">
+        <span class="kpi-label">Active Rate</span>
+        <span class="kpi-value c-cyan" id="kpiEff">—</span>
+        <span class="kpi-delta c-cyan" id="kpiEffSub">calculating...</span>
+      </div>
+    </div>
+
+    <!-- ROW 1: Trend + Donut + Dept Bar -->
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">7-Day Registration Trend</span>
+          <span class="card-badge" id="trendBadge">—</span>
+        </div>
+        <canvas id="trendChart"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Status Distribution</span>
+        </div>
+        <canvas id="donutChart" style="max-height:150px"></canvas>
+        <div id="donutLegend" style="display:flex;flex-direction:column;gap:8px;margin-top:14px"></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Department Headcount</span>
+        </div>
+        <canvas id="deptBar" style="max-height:150px"></canvas>
+        <div id="deptProgBars" style="display:flex;flex-direction:column;gap:8px;margin-top:14px"></div>
+      </div>
+    </div>
+
+    <!-- ROW 2: Dept Mini Cards -->
+    <div class="grid-3b" id="deptCards"></div>
+
+    <!-- ROW 3: Worker Table -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Worker Registry</span>
+        <span class="card-badge" id="tableCount">— records</span>
+      </div>
+      <div class="search-wrap">
+        <input class="search-input" id="masterSearch" placeholder="Search name or department..." oninput="applyFilters()">
+        <button class="filter-tab active" data-dept="All"             onclick="setDept('All')">All</button>
+        <button class="filter-tab"        data-dept="Assembly"        onclick="setDept('Assembly')">Assembly</button>
+        <button class="filter-tab"        data-dept="Logistics"       onclick="setDept('Logistics')">Logistics</button>
+        <button class="filter-tab"        data-dept="Quality Control" onclick="setDept('Quality Control')">QC</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Employee</th><th>Department</th>
+              <th>Status</th><th>Joined</th><th style="text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="workerRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="historySidebar">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+    <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px">Shift Timeline</span>
+    <button onclick="toggleSidebar()" style="background:none;border:none;color:var(--dim);cursor:pointer;font-size:18px">✕</button>
+  </div>
+  <div id="logList"><p style="font-size:11px;color:var(--muted)">No events yet.</p></div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal-box">
+    <div class="modal-title">Register Worker</div>
+    <div class="field-label">Full Name</div>
+    <input class="field-input" id="addName" placeholder="e.g. Sopheak Mony">
+    <div class="field-label">Department</div>
+    <select class="field-input" id="addDept" style="appearance:none">
+      <option>Assembly</option><option>Logistics</option><option>Quality Control</option>
+    </select>
+    <div class="field-label">Status</div>
+    <select class="field-input" id="addStatus" style="appearance:none">
+      <option value="Active">Active</option>
+      <option value="On Break">On Break</option>
+      <option value="Off Duty">Off Duty</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('addModal')">Cancel</button>
+      <button class="btn btn-amber" onclick="saveWorker()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <div class="modal-title">Edit Worker</div>
+    <input type="hidden" id="editId">
+    <div class="field-label">Full Name</div>
+    <input class="field-input" id="editName" placeholder="Full Name">
+    <div class="field-label">Department</div>
+    <select class="field-input" id="editDept" style="appearance:none">
+      <option>Assembly</option><option>Logistics</option><option>Quality Control</option>
+    </select>
+    <div class="field-label">Status</div>
+    <select class="field-input" id="editStatus" style="appearance:none">
+      <option value="Active">Active</option>
+      <option value="On Break">On Break</option>
+      <option value="Off Duty">Off Duty</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('editModal')">Cancel</button>
+      <button class="btn btn-amber" onclick="updateWorker()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box" style="text-align:center;max-width:360px">
+    <div style="font-size:40px;margin-bottom:12px">⚠</div>
+    <div class="modal-title" style="margin-bottom:8px">Delete Worker?</div>
+    <p style="font-size:11px;color:var(--dim);margin-bottom:28px">This action is permanent and cannot be undone.</p>
+    <input type="hidden" id="deleteId">
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('deleteModal')">Cancel</button>
+      <button class="btn" style="background:var(--red);color:#fff;flex:1" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:3000/workers';
+let allWorkers = [];
+let activeDept = 'All';
+let trendChart, donutChart, deptBarChart;
+
+const STATUS_ORDER = ['Active','On Break','Off Duty'];
+const DEPT_LIST    = ['Assembly','Logistics','Quality Control'];
+const DEPT_COLORS  = { Assembly:'#22d3ee', Logistics:'#f59e0b', 'Quality Control':'#a78bfa' };
+
+const CHART_OPTS = {
+  responsive: true,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor:'#1e1e24', titleColor:'#a1a1aa', bodyColor:'#e4e4e7',
+      borderColor:'#2a2a34', borderWidth:1, padding:10, cornerRadius:8,
+    }
+  }
+};
+
+// CLOCK
+function tick() {
+  document.getElementById('liveClock').textContent =
+    new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
+    + ' · ' + new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+}
+tick(); setInterval(tick, 1000);
+
+// MODAL
+function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// SIDEBAR
+function toggleSidebar() { document.getElementById('historySidebar').classList.toggle('open'); }
+
+function addLog(html, color='#f59e0b') {
+  const list = document.getElementById('logList');
+  if (list.querySelector('p')) list.innerHTML = '';
+  const t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const d = document.createElement('div');
+  d.className = 'log-item';
+  d.innerHTML = `<div class="log-dot" style="background:${color}"></div>
+    <div><div class="log-time">${t}</div><div class="log-text">${html}</div></div>`;
+  list.prepend(d);
+}
+
+// FETCH
+async function fetchWorkers() {
+  try {
+    const res = await fetch(API);
+    allWorkers = await res.json();
+    applyFilters();
+    updateKPIs();
+    updateCharts();
+  } catch(e) { console.error(e); }
+}
+
+// KPIs with animated counter
+function animCount(el, target) {
+  let v = 0; const step = Math.max(1, Math.ceil(target/20));
+  const t = setInterval(() => { v = Math.min(v+step, target); el.textContent = v; if(v>=target) clearInterval(t); }, 40);
+}
+
+function updateKPIs() {
+  const total  = allWorkers.length;
+  const active = allWorkers.filter(w=>w.status==='Active').length;
+  const brk    = allWorkers.filter(w=>w.status==='On Break').length;
+  const off    = allWorkers.filter(w=>w.status==='Off Duty').length;
+  const eff    = total > 0 ? Math.round(active/total*100) : 0;
+
+  animCount(document.getElementById('kpiTotal'), total);
+  animCount(document.getElementById('kpiActive'), active);
+  animCount(document.getElementById('kpiBreak'), brk);
+  animCount(document.getElementById('kpiOff'), off);
+
+  document.getElementById('kpiTotalSub').textContent = total + ' registered';
+
+  let s = 0;
+  const t2 = setInterval(() => {
+    s = Math.min(s+2, eff);
+    document.getElementById('kpiEff').textContent = s + '%';
+    if(s>=eff) clearInterval(t2);
+  }, 30);
+  document.getElementById('kpiEffSub').textContent = eff >= 70 ? '↑ healthy rate' : '↓ low rate';
+}
+
+// CHARTS
+function updateCharts() { buildTrend(); buildDonut(); buildDeptBar(); buildDeptCards(); }
+
+function buildTrend() {
+  const labels = [], counts = [];
+  for (let i=6; i>=0; i--) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    labels.push(d.toLocaleDateString('en-US',{weekday:'short'}));
+    const ds = d.toISOString().slice(0,10);
+    const real = allWorkers.filter(w => w.join_date && new Date(w.join_date).toISOString().slice(0,10)===ds).length;
+    counts.push(real);
+  }
+  document.getElementById('trendBadge').textContent = counts.reduce((a,b)=>a+b,0) + ' this week';
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  if (trendChart) trendChart.destroy();
+  trendChart = new Chart(ctx, {
+    type:'line',
+    data:{ labels, datasets:[{
+      data: counts, borderColor:'#22d3ee', backgroundColor:'rgba(34,211,238,0.08)',
+      fill:true, tension:0.4, pointBackgroundColor:'#22d3ee',
+      pointRadius:4, pointHoverRadius:6, borderWidth:2
+    }]},
+    options:{
+      ...CHART_OPTS,
+      scales:{
+        x:{grid:{color:'#1e1e24'},ticks:{color:'#52525b',font:{family:'DM Mono',size:10}}},
+        y:{grid:{color:'#1e1e24'},ticks:{color:'#52525b',font:{family:'DM Mono',size:10},stepSize:1},beginAtZero:true}
+      }
+    }
+  });
+}
+
+function buildDonut() {
+  const vals = [
+    allWorkers.filter(w=>w.status==='Active').length,
+    allWorkers.filter(w=>w.status==='On Break').length,
+    allWorkers.filter(w=>w.status==='Off Duty').length,
+  ];
+  const ctx = document.getElementById('donutChart').getContext('2d');
+  if (donutChart) donutChart.destroy();
+  donutChart = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels:['Active','On Break','Off Duty'], datasets:[{
+      data: vals,
+      backgroundColor:['rgba(16,185,129,.8)','rgba(245,158,11,.8)','rgba(82,82,91,.5)'],
+      borderColor:['#10b981','#f59e0b','#52525b'],
+      borderWidth:1, hoverOffset:4
+    }]},
+    options:{...CHART_OPTS, cutout:'68%'}
+  });
+
+  const leg = document.getElementById('donutLegend');
+  leg.innerHTML = '';
+  [['Active',vals[0],'#10b981'],['On Break',vals[1],'#f59e0b'],['Off Duty',vals[2],'#52525b']].forEach(([l,v,c])=>{
+    const pct = allWorkers.length ? Math.round(v/allWorkers.length*100) : 0;
+    leg.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;font-size:10px">
+      <span style="display:flex;align-items:center;gap:6px;color:var(--dim)">
+        <span style="width:6px;height:6px;border-radius:50%;background:${c};display:inline-block"></span>${l}
+      </span>
+      <span style="color:var(--text)">${v} <span style="color:var(--muted)">(${pct}%)</span></span>
+    </div>`;
+  });
+}
+
+function buildDeptBar() {
+  const counts = DEPT_LIST.map(d=>allWorkers.filter(w=>w.dept===d).length);
+  const ctx = document.getElementById('deptBar').getContext('2d');
+  if (deptBarChart) deptBarChart.destroy();
+  deptBarChart = new Chart(ctx, {
+    type:'bar',
+    data:{ labels:['Assembly','Logistics','QC'], datasets:[{
+      data:counts,
+      backgroundColor:['rgba(34,211,238,.7)','rgba(245,158,11,.7)','rgba(167,139,250,.7)'],
+      borderColor:['#22d3ee','#f59e0b','#a78bfa'],
+      borderWidth:1, borderRadius:5
+    }]},
+    options:{
+      ...CHART_OPTS,
+      scales:{
+        x:{grid:{color:'#1e1e24'},ticks:{color:'#52525b',font:{family:'DM Mono',size:10}}},
+        y:{grid:{color:'#1e1e24'},ticks:{color:'#52525b',font:{family:'DM Mono',size:10},stepSize:1},beginAtZero:true}
+      }
+    }
+  });
+
+  // progress bars below chart
+  const total = allWorkers.length || 1;
+  document.getElementById('deptProgBars').innerHTML = DEPT_LIST.map(dept=>{
+    const n = allWorkers.filter(w=>w.dept===dept).length;
+    const pct = Math.round(n/total*100);
+    const color = DEPT_COLORS[dept];
+    return `<div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--dim);margin-bottom:4px">
+        <span>${dept}</span><span style="color:var(--text)">${n}</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function buildDeptCards() {
+  document.getElementById('deptCards').innerHTML = DEPT_LIST.map(dept=>{
+    const workers = allWorkers.filter(w=>w.dept===dept);
+    const active  = workers.filter(w=>w.status==='Active').length;
+    const color   = DEPT_COLORS[dept];
+    const pct     = workers.length ? Math.round(active/workers.length*100) : 0;
+    return `<div class="dept-card" style="border-top:2px solid ${color}">
+      <span class="dept-card-name">${dept}</span>
+      <span class="dept-card-count" style="color:${color}">${workers.length}</span>
+      <div style="font-size:10px;color:var(--dim)">${active} active · ${workers.length-active} offline</div>
+      <div class="prog-bar">
+        <div class="prog-fill" style="width:${pct}%;background:${color}"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// FILTER & RENDER
+function setDept(dept) {
+  activeDept = dept;
+  document.querySelectorAll('.filter-tab').forEach(b=>b.classList.toggle('active',b.dataset.dept===dept));
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('masterSearch').value.toLowerCase();
+  let list = allWorkers;
+  if (activeDept!=='All') list = list.filter(w=>w.dept===activeDept);
+  if (q) list = list.filter(w=>w.name.toLowerCase().includes(q)||w.dept.toLowerCase().includes(q));
+  render(list);
+}
+
+function render(workers) {
+  document.getElementById('tableCount').textContent = workers.length + ' records';
+  const tbody = document.getElementById('workerRows');
+  if (!workers.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No workers found.</td></tr>`; return;
+  }
+  tbody.innerHTML = '';
+  workers.forEach((w,i)=>{
+    const status = w.status||'Active';
+    const bc  = status==='Active'?'badge-active':status==='On Break'?'badge-break':'badge-off';
+    const dot = status==='Active'?'#10b981':status==='On Break'?'#f59e0b':'#52525b';
+    const tr  = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-size:10px;color:var(--muted)">${String(i+1).padStart(2,'0')}</td>
+      <td style="font-weight:500;color:var(--text)">${esc(w.name)}</td>
+      <td style="font-size:11px;color:var(--dim)">${esc(w.dept)}</td>
+      <td><span class="badge ${bc}"><span class="badge-dot" style="background:${dot}"></span>${status}</span></td>
+      <td style="font-size:10px;color:var(--muted)">${w.join_date?new Date(w.join_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—'}</td>
+      <td style="text-align:right">
+        <button class="action-btn cycle"  onclick="cycleStatus(${w.id},'${status}')">⟳</button>
+        <button class="action-btn edit"   onclick="openEdit(${w.id})">Edit</button>
+        <button class="action-btn danger" onclick="openDelete(${w.id})">Del</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ADD
+async function saveWorker() {
+  const name   = document.getElementById('addName').value.trim();
+  const dept   = document.getElementById('addDept').value;
+  const status = document.getElementById('addStatus').value;
+  if (!name) return alert('Name required.');
+  try {
+    const res = await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,dept,status})});
+    if (res.ok) {
+      document.getElementById('addName').value = '';
+      closeModal('addModal');
+      addLog(`<b style="color:#e4e4e7">${esc(name)}</b> registered → ${dept}`,'#f59e0b');
+      fetchWorkers();
+    }
+  } catch(e) { alert('Server error.'); }
+}
+
+// EDIT
+function openEdit(id) {
+  const w = allWorkers.find(x=>x.id===id); if(!w) return;
+  document.getElementById('editId').value     = id;
+  document.getElementById('editName').value   = w.name;
+  document.getElementById('editDept').value   = w.dept;
+  document.getElementById('editStatus').value = w.status||'Active';
+  openModal('editModal');
+}
+async function updateWorker() {
+  const id=document.getElementById('editId').value,
+        name=document.getElementById('editName').value.trim(),
+        dept=document.getElementById('editDept').value,
+        status=document.getElementById('editStatus').value;
+  if(!name) return alert('Name required.');
+  try {
+    const res=await fetch(`${API}/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,dept,status})});
+    if(res.ok){closeModal('editModal');addLog(`<b style="color:#e4e4e7">${esc(name)}</b> record updated`,'#22d3ee');fetchWorkers();}
+  } catch(e){alert('Server error.');}
+}
+
+// STATUS CYCLE
+async function cycleStatus(id,current) {
+  const next=STATUS_ORDER[(STATUS_ORDER.indexOf(current)+1)%STATUS_ORDER.length];
+  const w=allWorkers.find(x=>x.id===id);
+  const col=next==='Active'?'#10b981':next==='On Break'?'#f59e0b':'#52525b';
+  try {
+    await fetch(`${API}/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:next})});
+    addLog(`<b style="color:#e4e4e7">${esc(w?.name||'Worker')}</b> → <span style="color:${col}">${next}</span>`,col);
+    fetchWorkers();
+  } catch(e){alert('Server error.');}
+}
+
+// DELETE
+function openDelete(id){document.getElementById('deleteId').value=id;openModal('deleteModal');}
+async function confirmDelete() {
+  const id=document.getElementById('deleteId').value;
+  const w=allWorkers.find(x=>x.id==id);
+  try {
+    await fetch(`${API}/${id}`,{method:'DELETE'});
+    closeModal('deleteModal');
+    addLog(`<b style="color:var(--red)">${esc(w?.name||'Worker')}</b> removed`,'#f43f5e');
+    fetchWorkers();
+  } catch(e){alert('Server error.');}
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+fetchWorkers();
+</script>
+</body>
+</html>

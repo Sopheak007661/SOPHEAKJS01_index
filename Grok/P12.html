@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyper-Loop Infinite Zoom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@900&display=swap');
+        
+        body { background: #000; color: #fff; font-family: 'Unbounded', sans-serif; overflow-x: hidden; height: 500vh; }
+        
+        /* The container that holds all sections */
+        .zoom-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            perspective: 2000px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .portal-section {
+            position: absolute;
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            will-change: transform, opacity;
+        }
+
+        /* The 'Hole' in the center of each section to see the next one */
+        .portal-hole {
+            clip-path: circle(25% at 50% 50%);
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="zoom-container" id="container">
+        <section class="portal-section z-[5]" id="s1">
+            <div class="text-center">
+                <h1 class="text-[10vw] leading-none mb-4">ENTER</h1>
+                <p class="text-cyan-400 tracking-[1em]">SCROLL TO DIVE</p>
+            </div>
+        </section>
+
+        <section class="portal-section z-[4] opacity-0" id="s2">
+            <div class="grid grid-cols-2 gap-8 p-20 w-full max-w-5xl">
+                <div class="h-64 bg-white/5 border border-white/10 rounded-3xl p-8 flex items-end">
+                    <span class="text-4xl">01</span>
+                </div>
+                <div class="h-64 bg-white/5 border border-white/10 rounded-3xl p-8 flex items-end">
+                    <span class="text-4xl">02</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="portal-section z-[3] opacity-0" id="s3">
+            <h1 class="text-[12vw] italic text-transparent bg-clip-text bg-gradient-to-b from-purple-500 to-blue-600">
+                CYBERSPACE
+            </h1>
+        </section>
+
+        <section class="portal-section z-[2] opacity-0" id="s4">
+            <div class="text-center">
+                <h2 class="text-6xl mb-10">DESTINATION REACHED</h2>
+                <button class="px-10 py-4 bg-white text-black rounded-full font-bold uppercase tracking-widest">Restart</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const container = document.getElementById('container');
+        const sections = [
+            document.getElementById('s1'),
+            document.getElementById('s2'),
+            document.getElementById('s3'),
+            document.getElementById('s4')
+        ];
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const viewportHeight = window.innerHeight;
+            
+            sections.forEach((section, index) => {
+                // Each section starts zooming at a different scroll point
+                const offset = index * viewportHeight;
+                const progress = (scrolled - offset) / viewportHeight;
+
+                if (progress >= -1 && progress <= 1) {
+                    // Current section zooms in and disappears
+                    const scale = 1 + (progress * 5); // Intense zoom
+                    const opacity = 1 - Math.abs(progress);
+                    
+                    section.style.transform = `scale(${scale}) translateZ(${progress * 500}px)`;
+                    section.style.opacity = progress > 0 ? 1 - progress : 1 + progress;
+                    section.style.pointerEvents = progress > 0.5 ? 'none' : 'auto';
+                } else if (progress > 1) {
+                    section.style.opacity = '0';
+                    section.style.pointerEvents = 'none';
+                } else {
+                    section.style.opacity = '0';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

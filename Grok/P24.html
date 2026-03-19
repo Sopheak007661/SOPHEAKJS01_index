@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Omni-Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;800&display=swap');
+        
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .section-split {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            min-height: 100vh;
+        }
+
+        /* Glass Form */
+        .glass-bento {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .glass-bento:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: #6366f1;
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        /* Popular Sticky Sidebar */
+        .sticky-side {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #6366f1, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader" class="fixed top-0 left-0 h-1 bg-indigo-500 z-[100] transition-all duration-300"></div>
+
+    <main class="section-split">
+        
+        <div class="sticky-side border-r border-white/5">
+            <h1 class="text-[8vw] font-extrabold tracking-tighter leading-none mb-6">
+                SOPHEAK<span class="text-indigo-500">.</span>
+            </h1>
+            <p class="text-zinc-500 text-lg max-w-xs leading-relaxed">
+                A collection of digital forms, architectural logic, and fluid motion.
+            </p>
+            <div class="mt-20 flex gap-4">
+                <div class="w-12 h-[2px] bg-indigo-500"></div>
+                <span class="text-xs font-bold tracking-widest uppercase opacity-40">Scroll to Morph</span>
+            </div>
+        </div>
+
+        <div class="p-10 flex flex-col gap-20">
+            
+            <section class="grid grid-cols-2 gap-4">
+                <div class="glass-bento col-span-2 h-64 rounded-[2.5rem] p-10 flex flex-col justify-end">
+                    <h3 class="text-3xl font-bold">System Architecture</h3>
+                    <p class="opacity-50">Robust foundations for scale.</p>
+                </div>
+                <div class="glass-bento rounded-[2.5rem] aspect-square p-8 flex flex-col items-center justify-center text-center">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <p class="text-sm font-bold">High Speed</p>
+                </div>
+                <div class="glass-bento rounded-[2.5rem] aspect-square p-8 flex flex-col items-center justify-center text-center">
+                    <div class="text-4xl mb-4">💎</div>
+                    <p class="text-sm font-bold">Premium UI</p>
+                </div>
+            </section>
+
+            <section class="py-20 border-t border-white/10">
+                <h2 class="text-xs font-bold tracking-[0.3em] uppercase opacity-30 mb-10">Selected Experience</h2>
+                <div class="flex flex-col gap-8">
+                    <div class="group flex justify-between items-center py-6 border-b border-white/5 hover:px-4 transition-all duration-500">
+                        <span class="text-2xl font-medium group-hover:gradient-text">Product Engineering</span>
+                        <span class="opacity-30 group-hover:opacity-100">2026</span>
+                    </div>
+                    <div class="group flex justify-between items-center py-6 border-b border-white/5 hover:px-4 transition-all duration-500">
+                        <span class="text-2xl font-medium group-hover:gradient-text">Visual Identity</span>
+                        <span class="opacity-30 group-hover:opacity-100">2025</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="pb-40">
+                <div class="glass-bento rounded-[3rem] overflow-hidden group">
+                    <div class="h-[500px] overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80" 
+                             class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000">
+                    </div>
+                    <div class="p-10 flex justify-between items-center">
+                        <h3 class="text-2xl font-bold">Abstract Logic</h3>
+                        <button class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                            →
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Progress Bar Logic
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("loader").style.width = scrolled + "%";
+        });
+
+        // Background Color Shift Logic
+        const body = document.body;
+        window.addEventListener('scroll', () => {
+            const scrollVal = window.scrollY;
+            if (scrollVal > 500 && scrollVal < 1200) {
+                body.style.backgroundColor = "#020617"; // Navy
+            } else if (scrollVal >= 1200) {
+                body.style.backgroundColor = "#0f172a"; // Slate
+            } else {
+                body.style.backgroundColor = "#000"; // Pitch Black
+            }
+        });
+    </script>
+</body>
+</html>

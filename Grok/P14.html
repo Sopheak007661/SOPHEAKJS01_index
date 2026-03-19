@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOPHEAK | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@300;900&display=swap');
+        
+        body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .font-sync { font-family: 'Syncopate', sans-serif; }
+
+        /* The animated background blob */
+        .blob {
+            position: fixed;
+            width: 500px; height: 500px;
+            background: linear-gradient(135deg, #3b82f6 0%, #a855f7 100%);
+            filter: blur(80px);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.2;
+            transition: all 0.5s ease-out;
+        }
+
+        /* Letter styling for the scroll effect */
+        .letter {
+            display: inline-block;
+            transition: transform 0.1s linear;
+            will-change: transform;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="blob" class="blob"></div>
+
+    <nav class="fixed top-0 w-full p-8 flex justify-between items-center z-50 mix-blend-difference">
+        <div class="font-sync text-sm tracking-widest">SOPHEAK ©2026</div>
+        <div class="h-[1px] w-20 bg-white/20"></div>
+        <div class="text-xs tracking-widest uppercase opacity-50">Creative Developer</div>
+    </nav>
+
+    <main>
+        <section class="h-[120vh] flex flex-col items-center justify-center relative">
+            <h1 id="hero-name" class="font-sync text-[15vw] leading-none tracking-tighter flex select-none">
+                </h1>
+            <p class="mt-10 text-zinc-500 tracking-[1.5em] uppercase text-[10px] animate-pulse">Scroll to Explore</p>
+        </section>
+
+        <section class="min-h-screen px-10 py-20 flex items-center justify-center">
+            <div class="glass-card max-w-4xl p-16 rounded-[4rem] relative overflow-hidden group">
+                <div class="absolute -top-20 -right-20 w-64 h-64 bg-purple-500/20 blur-3xl rounded-full transition-transform duration-1000 group-hover:scale-150"></div>
+                
+                <h2 class="text-6xl font-black mb-8 italic">Visionary Mind.</h2>
+                <p class="text-2xl text-zinc-400 leading-relaxed">
+                    Hello, I am <span class="text-white font-bold">SOPHEAK</span>. I design digital structures that breathe and move. My work is where mathematical logic meets aesthetic purity.
+                </p>
+            </div>
+        </section>
+
+        <section class="p-10 grid grid-cols-1 md:grid-cols-2 gap-10 max-w-7xl mx-auto pb-40">
+            <div class="h-[500px] glass-card rounded-[3rem] p-10 flex flex-col justify-end hover:scale-[0.98] transition-transform duration-500">
+                <span class="text-blue-400 font-mono mb-2">PROJECT 01</span>
+                <h3 class="text-3xl font-bold">Fluid Systems</h3>
+            </div>
+            <div class="h-[500px] glass-card rounded-[3rem] p-10 flex flex-col justify-end mt-20 hover:scale-[0.98] transition-transform duration-500">
+                <span class="text-purple-400 font-mono mb-2">PROJECT 02</span>
+                <h3 class="text-3xl font-bold">Digital Presence</h3>
+            </div>
+        </section>
+    </main>
+
+    <footer class="h-screen flex items-center justify-center bg-white text-black rounded-t-[5rem]">
+        <div class="text-center">
+            <h2 class="text-[10vw] font-sync leading-none mb-10">SOPHEAK</h2>
+            <button class="px-12 py-5 bg-black text-white rounded-full text-xl font-bold hover:px-16 transition-all duration-500">LET'S CONNECT</button>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Setup Hero Name Letters
+        const nameContainer = document.getElementById('hero-name');
+        const name = "SOPHEAK";
+        nameContainer.innerHTML = name.split('').map(char => `<span class="letter">${char}</span>`).join('');
+
+        const letters = document.querySelectorAll('.letter');
+        const blob = document.getElementById('blob');
+
+        // 2. Mouse Move: Follower Blob
+        document.addEventListener('mousemove', (e) => {
+            blob.style.transform = `translate(${e.clientX - 250}px, ${e.clientY - 250}px)`;
+        });
+
+        // 3. Scroll Logic: Kinetic Typography
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            
+            letters.forEach((letter, i) => {
+                // Each letter moves at a slightly different speed (Parallax)
+                const speed = (i + 1) * 0.1;
+                const yPos = scrolled * speed;
+                const rotation = scrolled * 0.05 * (i % 2 === 0 ? 1 : -1);
+                
+                // As you scroll down, letters spread out and rotate
+                letter.style.transform = `translateY(${yPos}px) rotate(${rotation}deg)`;
+                letter.style.opacity = 1 - (scrolled / 1000);
+            });
+        });
+    </script>
+</body>
+</html>

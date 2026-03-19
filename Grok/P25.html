@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;800&display=swap');
+        body { background: #000; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card { background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .row-anim { transition: all 0.3s ease; }
+        .row-anim:hover { background: rgba(255,255,255,0.03); transform: scale(1.005); }
+    </style>
+</head>
+<body class="p-8">
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+        <div class="glass-card p-6 rounded-3xl">
+            <p class="text-xs text-zinc-500 font-bold tracking-widest uppercase">Total Staff</p>
+            <h4 class="text-3xl font-extrabold">1,204</h4>
+        </div>
+        <div class="glass-card p-6 rounded-3xl border-l-4 border-l-emerald-500">
+            <p class="text-xs text-zinc-500 font-bold tracking-widest uppercase">Currently Active</p>
+            <h4 class="text-3xl font-extrabold text-emerald-500">892</h4>
+        </div>
+        <div class="glass-card p-6 rounded-3xl border-l-4 border-l-red-500">
+            <p class="text-xs text-zinc-500 font-bold tracking-widest uppercase">System Alerts</p>
+            <h4 class="text-3xl font-extrabold text-red-500">3</h4>
+        </div>
+        <div class="glass-card p-6 rounded-3xl bg-blue-600/10 border-l-4 border-l-blue-500">
+            <p class="text-xs text-zinc-500 font-bold tracking-widest uppercase">Factory Load</p>
+            <h4 class="text-3xl font-extrabold text-blue-500">92%</h4>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <input type="text" id="masterSearch" placeholder="Search worker by name, ID or role..." 
+               class="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 outline-none focus:border-blue-500">
+        <button class="bg-white text-black font-bold px-8 rounded-2xl hover:bg-zinc-200 transition-all">Download Report (PDF)</button>
+    </div>
+
+    <div class="glass-card rounded-[2.5rem] overflow-hidden">
+        <table class="w-full text-left">
+            <thead class="bg-white/5">
+                <tr class="text-xs text-zinc-500 font-black uppercase tracking-widest">
+                    <th class="p-6">Employee</th>
+                    <th class="p-6">Shift Status</th>
+                    <th class="p-6">Performance</th>
+                    <th class="p-6 text-right">Settings</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr class="row-anim border-t border-white/5">
+                    <td class="p-6 font-bold text-lg">SOPHEAK MASTER</td>
+                    <td class="p-6"><span class="bg-blue-500/10 text-blue-500 px-3 py-1 rounded-full text-[10px] font-black">SUPERVISOR</span></td>
+                    <td class="p-6 text-emerald-500">99.9%</td>
+                    <td class="p-6 text-right"><button class="opacity-30 hover:opacity-100">EDIT</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Simple search logic
+        const search = document.getElementById('masterSearch');
+        search.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
